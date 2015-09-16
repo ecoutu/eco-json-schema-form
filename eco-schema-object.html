@@ -93,9 +93,11 @@
         var pathParts = path.split('.');
 
         if (change.path === '_schemaProperties') {
+          var value = {};
           change.value.forEach(function(property) {
-            ctx.set([path, property.property], property.value);
+            value[property.property] = property.value;
           });
+          this.value = value;
         } else {
           var property = change.base[pathParts[1]];
           var newPath = ['value', property.property].concat(pathParts.slice(3));
