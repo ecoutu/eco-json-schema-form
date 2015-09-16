@@ -4,6 +4,7 @@
 <script src="../../ace-builds/src/ace.js"></script>
 <link href="../../jsoneditor/dist/jsoneditor.min.css" rel="stylesheet" type="text/css">
 <script src="../../jsoneditor/dist/jsoneditor.min.js"></script>
+<script src="schema.js"></script>
 
 <dom-module id="eco-json-schema-live-schema-demo">
 
@@ -23,19 +24,19 @@
       margin: 10px;
     }
 
-    .main-container {
-      height: 800px;
+    .editor-container {
+      height: 600px;
     }
 
     #jsoneditor {
-      width: 600px;
+      /*width: 600px;*/
       height: 93%;
     }
 
   </style>
   <template>
     <div class="horizontal layout main-container">
-      <paper-material>
+      <paper-material class="flex-2 editor-container">
         <h3>Schema Editor</h3>
         <div id="jsoneditor"></div>
       </paper-material>
@@ -59,32 +60,32 @@
         '_valueChanged(value.*)'
       ],
       ready: function () {
-        this._schema = {
-          title: 'User',
-          properties: {
-            name: {
-              type: 'string',
-              title: 'Name'
+
+        this._schema = demoSchema;
+
+        this.value =          {
+          names : ['Schwartz\'s'],
+          address : '3895 Saint Laurent Boulevard',
+          city : 'Montreal',
+          province : 'QC',
+          country : 'Canada',
+          postalCode : 'H2W1X9',
+          phoneNumbers : [
+            {
+              type: 'Main',
+              phoneNumber: '(514) 842-4813'
             },
-            emails: {
-              type: 'array',
-              title: 'Email Addresses',
-              items: {
-                type: 'object',
-                title: 'Email Address',
-                properties: {
-                  type: {
-                    type: 'string',
-                    title: 'Type'
-                  },
-                  email: {
-                    type: 'string',
-                    title: 'Email'
-                  }
-                }
-              }
+            {
+              type: 'Office',
+              phoneNumber: '(514) 842-4813'
             }
-          }
+          ],
+          websites : ['http://www.schwartzsdeli.com/'],
+          geo : [
+            -73.577675,
+            45.516201
+          ],
+          establishedDate : new Date('2015-09-14T17:50:32.493Z')
         };
 
         this.schema = JSON.parse(JSON.stringify(this._schema));
