@@ -6,21 +6,42 @@
 
 <dom-module id="eco-json-schema-live-schema-demo">
 
+  <link rel="import" href="../../paper-material/paper-material.html"/>
+
   <link rel="import" href="../eco-schema-object.html" />
   <link rel="import" href="../eco-schema-array.html" />
 
   <style>
 
-    .main-container > * {
-      margin: 5px;
+    paper-material {
+      background: #ffffff;
+    }
+
+    paper-material, paper-material > * {
+      margin: 10px;
+    }
+
+    .main-container {
+      height: 800px;
     }
 
   </style>
   <template>
     <div class="horizontal layout main-container">
-      <eco-schema-object id="schemaObj" schema="[[schema]]" class="flex-2" value="{{value}}"></eco-schema-object>
-      <div id="jsoneditor" class="flex-2"></div>
-      <pre id="valueText" class="flex"></pre>
+      <paper-material class="flex-2">
+        <h3>Schema Editor</h3>
+        <div id="jsoneditor"></div>
+      </paper-material>
+
+      <paper-material class="flex-2">
+        <h3>Generated Form</h3>
+        <eco-schema-object id="schemaObj" schema="[[schema]]" value="{{value}}"></eco-schema-object>
+      </paper-material>
+
+      <paper-material class="flex">
+        <h3>Value</h3>
+        <pre id="valueText"></pre>
+      </paper-material>
     </div>
 
   </template>
