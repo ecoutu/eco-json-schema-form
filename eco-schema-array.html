@@ -79,7 +79,18 @@
         '_schemaArrayItemsChanged(_schemaArrayItems.*)'
       ],
       _buildSchemaArrayItems: function(schema) {
-        return [];
+        if (this.value && this.value.length) {
+          return this.value.map(function(item) {
+            return {
+              label: schema.items.title,
+              type: schema.items.type,
+              schema: schema.items,
+              value: item
+            };
+          });
+        } else {
+          return [];
+        }
       },
       _schemaArrayItemsChanged: function(change) {
         var path = change.path.replace(/^_schemaArrayItems/, 'value');

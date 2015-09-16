@@ -68,6 +68,7 @@
         '_schemaPropertyChanged(_schemaProperties.*)'
       ],
       _buildSchemaProperties: function(schema) {
+        var ctx = this;
         return Object.keys(schema.properties).map(function(key) {
           var property = schema.properties[key];
           var edit = {
@@ -77,7 +78,9 @@
             schema: property
           };
 
-          if (property.type === 'object') {
+          if (ctx.value[key]) {
+            edit.value = ctx.value[key];
+          } else if (property.type === 'object') {
             edit.value = {};
           } else if (property.type === 'array') {
             edit.value = [];
