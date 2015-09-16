@@ -86,9 +86,9 @@
         var pathParts = path.split('.');
 
         if (change.path === '_schemaArrayItems' || change.path === '_schemaArrayItems.splices') {
-          this.set('value', change.base.map(function(item){
+          this.value = change.base.map(function(item){
             return item.value;
-          }));
+          });
         } else if (change.path === '_schemaArrayItems.length') {
           // array member changes handled by splices
         } else {
