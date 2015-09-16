@@ -1,0 +1,131 @@
+<link rel="import" href="../polymer/polymer.html"/>
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html"/>
+
+<dom-module id="eco-schema-object">
+
+  <link rel="import" href="../paper-input/paper-input.html"/>
+
+  <link rel="import" href="./eco-schema-array.html"/>
+
+  <template>
+
+    <style>
+
+      :host {
+        display: block;
+      }
+
+    </style>
+
+    <div class="vertical layout content">
+
+      <div class="flex header" hidden$="[[!label]]">[[label]]</div>
+
+      <template is="dom-repeat" items="{{_schemaProperties}}" as="property">
+        <template is="dom-if" if="[[_isSchemaValue(property.type)]]">
+          <paper-input label="[[property.label]]"
+                       name$="[[property.property]]"
+                       value="{{property.value}}">
+          </paper-input>
+        </template>
+
+        <template is="dom-if" if="[[_isSchemaObject(property.type)]]">
+          <eco-schema-object schema="[[property.schema]]"
+                             label="[[property.label]]"
+                             value="{{property.value}}">
+          </eco-schema-object>
+        </template>
+        
+        <template is="dom-if" if="[[_isSchemaArray(property.type)]]">
+          <eco-schema-array schema="[[property.schema]]"
+                            label="[[property.label]]"
+                            value="{{property.value}}">
+          </eco-schema-array>
+        </template>
+      </template>
+    </div>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'eco-schema-object',
+      properties: {
+        schema: {
+          type: Object,
+          observer: '_schemaChanged'
+        },
+        label: {
+          type: String
+        },
+        value: {
+          type: Object,
+          notify: true,
+          value: function() { return {}; }
+        }
+      },
+      observers: [
+        '_schemaPropertyChanged(_schemaProperties.*)'
+      ],
+      _buildSchemaProperties: function(schema) {
+        if (!schema.properties) {
+          return [];
+        }
+        var ctx = this;
+        return Object.keys(schema.properties).map(function(key) {
+          var property = schema.properties[key];
+          var edit = {
+            property: key,
+            label: property.title || key,
+            type: property.type,
+            schema: property
+          };
+
+          if (ctx.value[key]) {
+            edit.value = ctx.value[key];
+          } else if (property.type === 'object') {
+            edit.value = {};
+          } else if (property.type === 'array') {
+            edit.value = [];
+          } else {
+            edit.value = '';
+          }
+          return edit;
+        });
+      },
+      _schemaPropertyChanged: function(change) {
+        var pathParts = change.path.split('.');
+
+        if (change.path === '_schemaProperties') {
+          var value = {};
+          change.value.forEach(function(property) {
+            value[property.property] = property.value;
+          });
+          this.value = value;
+        } else {
+          var property = change.base[pathParts[1]];
+          var newPath = ['value', property.property].concat(pathParts.slice(3));
+
+          this.set(newPath, change.value);
+        }
+      },
+      _schemaChanged: function() {
+        this._schemaProperties = this._buildSchemaProperties(this.schema);
+      },
+      _isSchemaValue: function(type) {
+        if (Array.isArray(type)) {
+          return type.indexOf('string') !== -1 || type.indexOf('number') !== -1 || type.indexOf('boolean') !== -1;
+        } else {
+          return type === 'string' || type === 'number' || type === 'boolean';
+        }
+      },
+      _isSchemaObject: function(type) {
+        return type === 'object';
+      },
+      _isSchemaArray: function(type) {
+        return type === 'array';
+      }
+    });
+  </script>
+
+</dom-module>

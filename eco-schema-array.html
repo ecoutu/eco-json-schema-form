@@ -1,0 +1,151 @@
+<link rel="import" href="../polymer/polymer.html"/>
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html"/>
+
+<dom-module id="eco-schema-array">
+
+  <link rel="import" href="../iron-icons/iron-icons.html"/>
+  <link rel="import" href="../paper-icon-button/paper-icon-button.html"/>
+  <link rel="import" href="../paper-input/paper-input.html"/>
+
+  <link rel="import" href="./eco-schema-object.html"/>
+
+  <template>
+
+    <style>
+
+      :host {
+        display: block;
+      }
+
+    </style>
+
+    <div class="vertical layout content">
+
+      <div class="horizontal center layout">
+        <div class="flex header">[[label]]</div>
+        <paper-icon-button icon="add" on-click="_onAddItem"></paper-icon-button>
+      </div>
+
+      <template is="dom-repeat" items="{{_schemaArrayItems}}" as="item">
+        <div class="horizontal center layout">
+          <div class="flex">
+            <template is="dom-if" if="[[_isSchemaValue(item.type)]]">
+              <paper-input label="[[item.label]]"
+                           name$="[[item.property]]"
+                           value="{{item.value}}">
+              </paper-input>
+            </template>
+
+            <template is="dom-if" if="[[_isSchemaObject(item.type)]]">
+              <eco-schema-object schema="[[item.schema]]"
+                                 label="[[item.label]]"
+                                 value="{{item.value}}">
+              </eco-schema-object>
+            </template>
+
+            <template is="dom-if" if="[[_isSchemaArray(item.type)]]">
+              <eco-schema-array schema="[[item.schema]]"
+                                label="[[item.label]]"
+                                value="{{item.value}}">
+              </eco-schema-array>
+            </template>
+          </div>
+          <paper-icon-button icon="remove" on-click="_onRemoveItem"></paper-icon-button>
+        </div>
+
+      </template>
+    </div>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'eco-schema-array',
+      properties: {
+        schema: {
+          type: Object,
+          observer: '_schemaChanged'
+        },
+        label: {
+          type: String
+        },
+        value: {
+          type: Object,
+          notify: true,
+          value: function() { return []; }
+        }
+      },
+      observers: [
+        '_schemaArrayItemsChanged(_schemaArrayItems.*)'
+      ],
+      _buildSchemaArrayItems: function(schema) {
+        if (this.value && this.value.length) {
+          return this.value.map(function(item) {
+            return {
+              label: schema.items.title,
+              type: schema.items.type,
+              schema: schema.items,
+              value: item
+            };
+          });
+        } else {
+          return [];
+        }
+      },
+      _schemaArrayItemsChanged: function(change) {
+        var path = change.path.replace(/^_schemaArrayItems/, 'value');
+        var pathParts = path.split('.');
+
+        if (change.path === '_schemaArrayItems' || change.path === '_schemaArrayItems.splices') {
+          this.value = change.base.map(function(item){
+            return item.value;
+          });
+        } else if (change.path === '_schemaArrayItems.length') {
+          // array member changes handled by splices
+        } else {
+          var index = pathParts[1];
+          var newPath = ['value', index].concat(pathParts.slice(3));
+          this.set(newPath, change.value);
+        }
+      },
+      _schemaChanged: function() {
+        this._schemaArrayItems = this._buildSchemaArrayItems(this.schema);
+      },
+      _onAddItem: function() {
+        var edit = {
+          label: this.schema.items.title,
+          type: this.schema.items.type,
+          schema: this.schema.items
+        };
+
+        if (this.schema.items.type === 'object') {
+          edit.value = {};
+        } else if (this.schema.items.type === 'array') {
+          edit.value = [];
+        } else {
+          edit.value = '';
+        }
+        this.push('_schemaArrayItems', edit);
+      },
+      _onRemoveItem: function(e) {
+        this._schemaArrayItems = this._schemaArrayItems.filter(function(item) {
+          return item !== e.model.item
+        });
+      },
+      _isSchemaValue: function(type) {
+        if (Array.isArray(type)) {
+          return type.indexOf('string') !== -1 || type.indexOf('number') !== -1 || type.indexOf('boolean') !== -1;
+        } else {
+          return type === 'string' || type === 'number' || type === 'boolean';
+        }
+      },
+      _isSchemaObject: function(type) {
+        return type === 'object';
+      },
+      _isSchemaArray: function(type) {
+        return type === 'array';
+      }
+    });
+  </script>
+
+</dom-module>
