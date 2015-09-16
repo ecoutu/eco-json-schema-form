@@ -87,6 +87,8 @@
           }
         };
 
+        this.schema = JSON.parse(JSON.stringify(this._schema));
+
         var editorOpts = {
           mode: 'code',
           change: this._schemaChanged.bind(this)
