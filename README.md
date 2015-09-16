@@ -1,2 +1,2 @@
 # eco-json-schema
-Polymer 1.0 json schema form builder
+Polymer 1.0 JSON Schema form builder

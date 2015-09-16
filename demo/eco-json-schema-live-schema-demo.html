@@ -1,0 +1,66 @@
+<link rel="import" href="../../polymer/polymer.html"/>
+<link rel="import" href="../../iron-flex-layout/iron-flex-layout.html"/>
+
+<link href="../../jsoneditor/dist/jsoneditor.min.css" rel="stylesheet" type="text/css">
+<script src="../../jsoneditor/dist/jsoneditor.min.js"></script>
+
+<dom-module id="eco-json-schema-live-schema-demo">
+
+  <link rel="import" href="../eco-schema-object.html" />
+  <link rel="import" href="../eco-schema-array.html" />
+
+  <style>
+
+    #jsoneditor {
+      height: 100%;
+    }
+
+  </style>
+  <template>
+    <div class="horizontal layout">
+      <eco-schema-object id="schemaObj" schema="[[schema]]" class="flex"></eco-schema-object>
+      <div id="jsoneditor" class="flex"></div>
+    </div>
+
+  </template>
+  <script>
+    Polymer({
+      is: 'eco-json-schema-live-schema-demo',
+      ready: function () {
+        this.schema = {
+          title: 'User',
+          properties: {
+            name: {
+              type: 'string',
+              title: 'Name'
+            },
+            emails: {
+              type: 'array',
+              title: 'Email Addresses',
+              items: {
+                type: 'object',
+                title: 'Email Address',
+                properties: {
+                  type: {
+                    type: 'string',
+                    title: 'Type'
+                  },
+                  email: {
+                    type: 'string',
+                    title: 'Email'
+                  }
+                }
+              }
+            }
+          }
+        };
+
+        this.editor = new JSONEditor(this.$.jsoneditor, {change: this._schemaChanged.bind(this)}, this.schema);
+        this.editor.set(this.schema);
+      },
+      _schemaChanged: function() {
+        this.schema = this.editor.get();
+      }
+    });
+  </script>
+</dom-module>
