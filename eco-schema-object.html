@@ -88,9 +88,7 @@
         });
       },
       _schemaPropertyChanged: function(change) {
-        var ctx = this;
-        var path = change.path.replace(/^_schemaProperties/, 'value');
-        var pathParts = path.split('.');
+        var pathParts = change.path.split('.');
 
         if (change.path === '_schemaProperties') {
           var value = {};
