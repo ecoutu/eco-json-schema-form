@@ -6,7 +6,7 @@ Polymer 1.0 JSON Schema form builder
 
 This repository provides elements that take in a [JSON schema](http://json-schema.org/) and generates a DOM tree of inputs linked to the object described by the schema.
 
-## Example
+## [Demo](http://ecoutu.github.io/eco-json-schema/components/eco-json-schema/demo/)
 
 With a schema:
 
