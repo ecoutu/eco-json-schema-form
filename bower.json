@@ -27,6 +27,7 @@
     "polymer": "Polymer/polymer#~1.1.3"
   },
   "devDependencies": {
+    "ace-builds": "~1.2.0",
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
     "jsoneditor": "~4.2.1",
     "paper-material": "PolymerElements/paper-material#~1.0.2",

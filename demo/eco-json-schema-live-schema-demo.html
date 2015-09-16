@@ -1,6 +1,7 @@
 <link rel="import" href="../../polymer/polymer.html"/>
 <link rel="import" href="../../iron-flex-layout/iron-flex-layout.html"/>
 
+<script src="../../ace-builds/src/ace.js"></script>
 <link href="../../jsoneditor/dist/jsoneditor.min.css" rel="stylesheet" type="text/css">
 <script src="../../jsoneditor/dist/jsoneditor.min.js"></script>
 
@@ -15,6 +16,7 @@
 
     paper-material {
       background: #ffffff;
+      height: 100%;
     }
 
     paper-material, paper-material > * {
@@ -26,13 +28,14 @@
     }
 
     #jsoneditor {
-      height: 100%;
+      width: 600px;
+      height: 93%;
     }
 
   </style>
   <template>
     <div class="horizontal layout main-container">
-      <paper-material class="flex-2">
+      <paper-material>
         <h3>Schema Editor</h3>
         <div id="jsoneditor"></div>
       </paper-material>
@@ -56,7 +59,7 @@
         '_valueChanged(value.*)'
       ],
       ready: function () {
-        this.schema = {
+        this._schema = {
           title: 'User',
           properties: {
             name: {
@@ -84,16 +87,29 @@
           }
         };
 
-        this.editor = new JSONEditor(this.$.jsoneditor, {change: this._schemaChanged.bind(this)}, this.schema);
-        this.editor.set(this.schema);
+        var editorOpts = {
+          mode: 'code',
+          change: this._schemaChanged.bind(this)
+        };
+
+        this.editor = new JSONEditor(this.$.jsoneditor, editorOpts, this._schema);
       },
       _schemaChanged: function() {
-        this.schema = this.editor.get();
+        if (!this.editor) {
+          console.log('Editor is falsey');
+        } else {
+          try {
+            var json = JSON.parse(this.editor.getText());
+            this.schema = json;
+          } catch (e) {
+            // bad, bad json
+          }
+        }
       },
       _valueChanged: function() {
         var json = JSON.stringify(this.value, null, ' ');
         this.$.valueText.innerHTML = json;
-      },
+      }
     });
   </script>
 </dom-module>
