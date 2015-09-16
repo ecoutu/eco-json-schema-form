@@ -38,15 +38,15 @@
 
             <template is="dom-if" if="[[_isSchemaObject(item.type)]]">
               <eco-schema-object schema="[[item.schema]]"
-                                  label="[[item.label]]"
-                                  value="{{item.value}}">
+                                 label="[[item.label]]"
+                                 value="{{item.value}}">
               </eco-schema-object>
             </template>
 
             <template is="dom-if" if="[[_isSchemaArray(item.type)]]">
               <eco-schema-array schema="[[item.schema]]"
-                                 label="[[item.label]]"
-                                 value="{{item.value}}">
+                                label="[[item.label]]"
+                                value="{{item.value}}">
               </eco-schema-array>
             </template>
           </div>

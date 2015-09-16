@@ -31,15 +31,15 @@
 
         <template is="dom-if" if="[[_isSchemaObject(property.type)]]">
           <eco-schema-object schema="[[property.schema]]"
-                              label="[[property.label]]"
-                              value="{{property.value}}">
+                             label="[[property.label]]"
+                             value="{{property.value}}">
           </eco-schema-object>
         </template>
         
         <template is="dom-if" if="[[_isSchemaArray(property.type)]]">
           <eco-schema-array schema="[[property.schema]]"
-                              label="[[property.label]]"
-                              value="{{property.value}}">
+                            label="[[property.label]]"
+                            value="{{property.value}}">
           </eco-schema-array>
         </template>
       </template>
@@ -68,6 +68,9 @@
         '_schemaPropertyChanged(_schemaProperties.*)'
       ],
       _buildSchemaProperties: function(schema) {
+        if (!schema.properties) {
+          return [];
+        }
         var ctx = this;
         return Object.keys(schema.properties).map(function(key) {
           var property = schema.properties[key];

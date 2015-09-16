@@ -66,5 +66,6 @@ Where you will be given a `user` object that looks something like this:
 * Being able to set an initial value (eg, providing an instance of the schema for modification)
 * Specifying custom components for schemas/sub schemas
 * Validation
+* Specifying which fields to show
 
 
