@@ -11,21 +11,25 @@
 
   <style>
 
-    #jsoneditor {
-      height: 100%;
+    .main-container > * {
+      margin: 5px;
     }
 
   </style>
   <template>
-    <div class="horizontal layout">
-      <eco-schema-object id="schemaObj" schema="[[schema]]" class="flex"></eco-schema-object>
-      <div id="jsoneditor" class="flex"></div>
+    <div class="horizontal layout main-container">
+      <eco-schema-object id="schemaObj" schema="[[schema]]" class="flex-2" value="{{value}}"></eco-schema-object>
+      <div id="jsoneditor" class="flex-2"></div>
+      <pre id="valueText" class="flex"></pre>
     </div>
 
   </template>
   <script>
     Polymer({
       is: 'eco-json-schema-live-schema-demo',
+      observers: [
+        '_valueChanged(value.*)'
+      ],
       ready: function () {
         this.schema = {
           title: 'User',
@@ -60,7 +64,11 @@
       },
       _schemaChanged: function() {
         this.schema = this.editor.get();
-      }
+      },
+      _valueChanged: function() {
+        var json = JSON.stringify(this.value, null, ' ');
+        this.$.valueText.innerHTML = json;
+      },
     });
   </script>
 </dom-module>
