@@ -7,14 +7,9 @@ var demoSchema = {
       "title": "Branch",
       "type": "string"
     },
-    "names": {
-      "title": "Names",
-      "type": "array",
-      "items": {
-        "title": "Name",
-        "type": "string",
-        "minLength": 2
-      }
+    "name": {
+      "title": "Name",
+      "type": "string"
     },
     "address": {
       "title": "Address",
@@ -55,6 +50,20 @@ var demoSchema = {
             "title": "Phone Number",
             "type": "string"
           }
+        }
+      }
+    },
+    "job": {
+      "type": "object",
+      "title": "Job",
+      "properties": {
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "salary": {
+          "title": "Salary",
+          "type": "string"
         }
       }
     },

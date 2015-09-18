@@ -67,5 +67,5 @@ Where you will be given a `user` object that looks something like this:
 * Specifying custom components for schemas/sub schemas
 * Validation
 * Specifying which fields to show
-
-
+* Maybe go back to using an observer for schema object. When schema changes, build `_schemaProperties`, have an observer listening on `_schemaProperties.*` that builds the form.
+* For object components, is it even necessary to keep an internal array for value representation?
