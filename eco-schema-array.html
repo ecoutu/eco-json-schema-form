@@ -49,6 +49,9 @@
           value: function() { return []; }
         }
       },
+      _log: function() {
+        console.warn.apply(console, arguments);
+      },
       _buildSchemaArrayItems: function(schema) {
         if (this.value && this.value.length) {
           return this.value.map(function(item) {
@@ -74,42 +77,17 @@
 //        }
 //
 //        this.set(valuePath, detail.value);
-        console.log('wat')
+        console.group(this.schema.title, '_schemaArrayItemChanged');
+        this._log('detail', detail);
+
         var els = Array.prototype.slice.apply(this.$.form.children);
         var value = els.map(function(el) {
           return el.value;
         });
         this.value = value;
-      },
-      _buildSchemaEl: function(schema) {
-        var el = null;
-        if (this._isSchemaValue(schema.type)) {
-          el = this.create('paper-input', {
-            label: schema.label,
-            name: schema.property,
-            value: ''
-          });
-          this.listen(el, 'value-changed', '_schemaArrayItemChanged');
-          el.schemaProperty = schema;
-        } else if (this._isSchemaObject(schema.type)) {
-          el = this.create('eco-schema-object', {
-            label: schema.label,
-            value: {}
-          });
-          el.schemaProperty = schema;
-          this.listen(el, 'value-changed', '_schemaArrayItemChanged');
-          el.schema = schema;
-        } else if (this._isSchemaArray(schema.type)) {
-          el = this.create('eco-schema-array', {
-            label: schema.label,
-            value: []
-          });
-          el.schemaProperty = schema;
-          this.listen(el, 'value-changed', '_schemaArrayItemChanged');
-          el.schema = schema;
-        }
 
-        return el;
+        this._log('value', value);
+        console.groupEnd();
       },
       _buildForm: function() {
         var ctx = this;
@@ -119,7 +97,7 @@
         });
       },
       _schemaChanged: function() {
-        this._schemaArrayItems = this._buildSchemaArrayItems(this.schema);
+        this.value = this._buildSchemaArrayItems(this.schema);
       },
       _onAddItem: function() {
         var schema = this.schema.items;
@@ -129,20 +107,30 @@
           el = this.create('paper-input', {
             label: schema.label
           });
+          /*
+          It is required to insert the element into the dom before listening for
+          data binding events, as the event listener gets it's index by looking
+          at sibling elements
+           */
           Polymer.dom(this.$.form).appendChild(el);
+          this._log('value', el.value)
           this.listen(el, 'value-changed', '_schemaArrayItemChanged');
           el.value = '';
         } else if (this._isSchemaObject(schema.type)) {
           el = this.create('eco-schema-object', {
-            label: schema.label
+            label: schema.label,
+            value: {}
           });
+          // see above
           Polymer.dom(this.$.form).appendChild(el);
           this.listen(el, 'value-changed', '_schemaArrayItemChanged');
           el.schema = schema;
         } else if (this._isSchemaArray(schema.type)) {
           el = this.create('eco-schema-array', {
-            label: schema.label
+            label: schema.label,
+            value: []
           });
+          // see above
           Polymer.dom(this.$.form).appendChild(el);
           this.listen(el, 'value-changed', '_schemaArrayItemChanged');
           el.schema = schema;
@@ -150,7 +138,7 @@
       },
       _onRemoveItem: function(e) {
         this._schemaArrayItems = this._schemaArrayItems.filter(function(item) {
-          return item !== e.model.item
+          return item !== e.model.item;
         });
       },
       _isSchemaValue: function(type) {

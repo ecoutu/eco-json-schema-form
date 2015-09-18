@@ -43,6 +43,9 @@
           value: function() { return {}; }
         }
       },
+      _log: function() {
+        console.warn.apply(console, arguments);
+      },
       _buildSchemaProperties: function(schema) {
         if (!schema.properties) {
           return [];
@@ -70,6 +73,8 @@
         });
       },
       _schemaPropertyChanged: function (event, detail) {
+        console.group(this.schema.title, '_schemaPropertyChanged');
+        this._log(detail);
         var property = event.target.schemaProperty;
         var valuePath = ['value', property.property];
 
@@ -79,6 +84,7 @@
           property.value = detail.value;
         }
         this.set(valuePath, detail.value);
+        console.groupEnd();
       },
       _setValue: function() {
         var value = {};
