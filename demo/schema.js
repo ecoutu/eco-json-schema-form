@@ -58,6 +58,20 @@ var demoSchema = {
         }
       }
     },
+    "job": {
+      "type": "object",
+      "title": "Job",
+      "properties": {
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "salary": {
+          "title": "Salary",
+          "type": "string"
+        }
+      }
+    },
     "email": {
       "title": "Email",
       "type": "string",

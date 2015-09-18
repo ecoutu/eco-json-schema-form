@@ -64,45 +64,49 @@
         }
       },
       _schemaArrayItemChanged: function(event, detail) {
-        var arrayEls = Array.prototype.slice.apply(this.querySelectorAll('#form > *'));
+        console.log(event, detail);
+
+        var arrayEls = Array.prototype.slice.apply(this.$.form.children);
         var itemIndex = arrayEls.indexOf(event.target);
         var valuePath = ['value', itemIndex];
+
+        console.log(valuePath, detail);
 
         if (detail.path) {
           valuePath = valuePath.concat(detail.path.split('.').slice(1));
         }
         this.set(valuePath, detail.value);
       },
-      _buildSchemaEl: function(schema) {
-        var el = null;
-        if (this._isSchemaValue(schema.type)) {
-          el = this.create('paper-input', {
-            label: schema.label,
-            name: schema.property,
-            value: ''
-          });
-          this.listen(el, 'value-changed', '_schemaArrayItemChanged');
-          el.schemaProperty = schema;
-        } else if (this._isSchemaObject(schema.type)) {
-          el = this.create('eco-schema-object', {
-            label: schema.label,
-            value: {}
-          });
-          el.schemaProperty = schema;
-          this.listen(el, 'value-changed', '_schemaArrayItemChanged');
-          el.schema = schema;
-        } else if (this._isSchemaArray(schema.type)) {
-          el = this.create('eco-schema-array', {
-            label: schema.label,
-            value: []
-          });
-          el.schemaProperty = schema;
-          this.listen(el, 'value-changed', '_schemaArrayItemChanged');
-          el.schema = schema;
-        }
-
-        return el;
-      },
+//      _buildSchemaEl: function(schema) {
+//        var el = null;
+//        if (this._isSchemaValue(schema.type)) {
+//          el = this.create('paper-input', {
+//            label: schema.label,
+//            name: schema.property,
+//            value: ''
+//          });
+//          this.listen(el, 'value-changed', '_schemaArrayItemChanged');
+//          el.schemaProperty = schema;
+//        } else if (this._isSchemaObject(schema.type)) {
+//          el = this.create('eco-schema-object', {
+//            label: schema.label,
+//            value: {}
+//          });
+//          el.schemaProperty = schema;
+//          this.listen(el, 'value-changed', '_schemaArrayItemChanged');
+//          el.schema = schema;
+//        } else if (this._isSchemaArray(schema.type)) {
+//          el = this.create('eco-schema-array', {
+//            label: schema.label,
+//            value: []
+//          });
+//          el.schemaProperty = schema;
+//          this.listen(el, 'value-changed', '_schemaArrayItemChanged');
+//          el.schema = schema;
+//        }
+//
+//        return el;
+//      },
       _buildForm: function() {
         var ctx = this;
         this._schemaArrayItems.forEach(function (item) {
@@ -114,14 +118,43 @@
         this._schemaArrayItems = this._buildSchemaArrayItems(this.schema);
       },
       _onAddItem: function() {
-        var el = this._buildSchemaEl(this.schema.items);
-        Polymer.dom(this.$.form).appendChild(el);
+        var schema = this.schema.items;
+        var el = null;
 
-        var arrayEls = Array.prototype.slice.apply(this.$.form.children);
-        var itemIndex = arrayEls.indexOf(el);
-        console.log(itemIndex);
-        console.log(el.value);
-        this.set(['value', itemIndex], el.value);
+        if (this._isSchemaValue(schema.type)) {
+          el = this.create('paper-input', {
+            label: schema.label
+          });
+          this.listen(el, 'value-changed', '_schemaArrayItemChanged');
+          Polymer.dom(this.$.form).appendChild(el);
+
+//          var arrayEls = Array.prototype.slice.apply(this.$.form.children);
+//          var itemIndex = arrayEls.indexOf(el);
+//          el.value = 'w';
+//          console.log(itemIndex);
+//          console.log(el.value);
+
+//          this.set(['value', itemIndex], el.value);
+//          console.log(this.value);
+        } else if (this._isSchemaObject(schema.type)) {
+          el = this.create('eco-schema-object', {
+            label: schema.label
+          });
+          Polymer.dom(this.$.form).appendChild(el);
+          this.listen(el, 'value-changed', '_schemaArrayItemChanged');
+          el.schema = schema;
+        } else if (this._isSchemaArray(schema.type)) {
+          el = this.create('eco-schema-array', {
+            label: schema.label
+          });
+          Polymer.dom(this.$.form).appendChild(el);
+          this.listen(el, 'value-changed', '_schemaArrayItemChanged');
+          el.schema = schema;
+        }
+
+
+
+
       },
       _onRemoveItem: function(e) {
         this._schemaArrayItems = this._schemaArrayItems.filter(function(item) {
