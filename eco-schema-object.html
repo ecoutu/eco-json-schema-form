@@ -112,7 +112,7 @@
           } else if (ctx._isSchemaArray(property.type)) {
             el = ctx.create('eco-schema-array', {
               label: property.label,
-              value: ctx.value[property.property] || {}
+              value: ctx.value[property.property] || []
             });
             el.schemaProperty = property;
             ctx.listen(el, 'value-changed', '_schemaPropertyChanged');
