@@ -49,9 +49,9 @@
           value: function() { return []; }
         }
       },
-      _log: function() {
-        console.warn.apply(console, arguments);
-      },
+      observers: [
+        '_schemaArraySplicesChanged(_schemaArrayItems.splices)'
+      ],
       _buildSchemaArrayItems: function(schema) {
         if (this.value && this.value.length) {
           return this.value.map(function(item) {
@@ -66,6 +66,59 @@
           return [];
         }
       },
+      _schemaArraySplicesChanged: function(detail) {
+        var ctx = this;
+        console.group(this.schema.title, '_schemaArraySplicesChanged');
+
+        console.warn('detail', detail)
+
+        if (!detail) {
+          return console.warn('detail is undefined');
+        }
+
+        if (detail.keySplices) {
+          console.warn('Got keySplices, don\'t know what to do with them!');
+        }
+
+        detail.indexSplices.forEach(function(splice) {
+          var args = ['value', splice.index, splice.removed.length];
+
+          if (splice.removed && splice.removed.length) {
+            for (var i = splice.index, ii = splice.index + splice.removed.length; i < ii; i++) {
+              var el = ctx.$.form.children[i];
+              ctx.unlisten(el, 'value-changed', '_schemaArrayItemChanged');
+              ctx.$.form.removeChild(el);
+            }
+          }
+
+          if (splice.addedCount) {
+            for (var i = splice.index, ii = splice.index + splice.addedCount; i < ii; i++) {
+              var properties = splice.object[i];
+
+              var el = ctx.create(properties.component, properties);
+              var beforeEl = ctx.$.form.children[i];
+
+              if (beforeEl) {
+                Polymer.dom(ctx.$.form).insertBefore(el, beforeEl);
+              } else {
+                Polymer.dom(ctx.$.form).appendChild(el);
+              }
+
+              ctx.listen(el, 'value-changed', '_schemaArrayItemChanged');
+
+              if (properties.schema) {
+                el.schema = properties.schema;
+              }
+
+              args.push(splice.object[i].value);
+            }
+          }
+
+          ctx.splice.apply(ctx, args);
+        });
+
+        console.groupEnd();
+      },
       _schemaArrayItemChanged: function(event, detail) {
 //        var value =
 //        var arrayEls = Array.prototype.slice.apply(this.$.form.children);
@@ -78,7 +131,10 @@
 //
 //        this.set(valuePath, detail.value);
         console.group(this.schema.title, '_schemaArrayItemChanged');
-        this._log('detail', detail);
+        console.warn('detail', detail);
+        console.warn('arguments', arguments);
+
+
 
         var els = Array.prototype.slice.apply(this.$.form.children);
         var value = els.map(function(el) {
@@ -86,55 +142,30 @@
         });
         this.value = value;
 
-        this._log('value', value);
+        console.warn('value', value);
         console.groupEnd();
       },
-      _buildForm: function() {
-        var ctx = this;
-        this._schemaArrayItems.forEach(function (item) {
-          var el = ctx._buildSchemaEl(item.items);
-          Polymer.dom(ctx.$.form).appendChild(el);
-        });
-      },
       _schemaChanged: function() {
-        this.value = this._buildSchemaArrayItems(this.schema);
+        this._schemaArrayItems = this._buildSchemaArrayItems(this.schema);
       },
       _onAddItem: function() {
         var schema = this.schema.items;
-        var el = null;
+        var properties = {
+          label: schema.title,
+          schema: schema
+        };
 
-        if (this._isSchemaValue(schema.type)) {
-          el = this.create('paper-input', {
-            label: schema.label
-          });
-          /*
-          It is required to insert the element into the dom before listening for
-          data binding events, as the event listener gets it's index by looking
-          at sibling elements
-           */
-          Polymer.dom(this.$.form).appendChild(el);
-          this._log('value', el.value)
-          this.listen(el, 'value-changed', '_schemaArrayItemChanged');
-          el.value = '';
+        if (schema.component) {
+          properties.component = schema.component;
+        } else if (this._isSchemaValue(schema.type)) {
+          properties.component = 'paper-input';
         } else if (this._isSchemaObject(schema.type)) {
-          el = this.create('eco-schema-object', {
-            label: schema.label,
-            value: {}
-          });
-          // see above
-          Polymer.dom(this.$.form).appendChild(el);
-          this.listen(el, 'value-changed', '_schemaArrayItemChanged');
-          el.schema = schema;
+          properties.component = 'eco-schema-object';
         } else if (this._isSchemaArray(schema.type)) {
-          el = this.create('eco-schema-array', {
-            label: schema.label,
-            value: []
-          });
-          // see above
-          Polymer.dom(this.$.form).appendChild(el);
-          this.listen(el, 'value-changed', '_schemaArrayItemChanged');
-          el.schema = schema;
+          properties.component = 'eco-schema-array';
         }
+
+        this.push('_schemaArrayItems', properties);
       },
       _onRemoveItem: function(e) {
         this._schemaArrayItems = this._schemaArrayItems.filter(function(item) {
