@@ -17,32 +17,10 @@
 
     </style>
 
-    <div class="vertical layout content">
+    <div class="vertical layout">
 
       <div class="flex header" hidden$="[[!label]]">[[label]]</div>
-
-      <template is="dom-repeat" items="{{_schemaProperties}}" as="property">
-        <template is="dom-if" if="[[_isSchemaValue(property.type)]]">
-          <paper-input label="[[property.label]]"
-                       name$="[[property.property]]"
-                       value="{{property.value}}">
-          </paper-input>
-        </template>
-
-        <template is="dom-if" if="[[_isSchemaObject(property.type)]]">
-          <eco-schema-object schema="[[property.schema]]"
-                             label="[[property.label]]"
-                             value="{{property.value}}">
-          </eco-schema-object>
-        </template>
-        
-        <template is="dom-if" if="[[_isSchemaArray(property.type)]]">
-          <eco-schema-array schema="[[property.schema]]"
-                            label="[[property.label]]"
-                            value="{{property.value}}">
-          </eco-schema-array>
-        </template>
-      </template>
+      <div id="form"></div>
     </div>
 
   </template>
@@ -64,9 +42,6 @@
           value: function() { return {}; }
         }
       },
-      observers: [
-        '_schemaPropertyChanged(_schemaProperties.*)'
-      ],
       _buildSchemaProperties: function(schema) {
         if (!schema.properties) {
           return [];
@@ -93,24 +68,62 @@
           return edit;
         });
       },
-      _schemaPropertyChanged: function(change) {
-        var pathParts = change.path.split('.');
+      _schemaPropertyChanged: function (event, detail) {
+        var property = event.target.schemaProperty;
+        var valuePath = ['value', property.property];
 
-        if (change.path === '_schemaProperties') {
-          var value = {};
-          change.value.forEach(function(property) {
-            value[property.property] = property.value;
-          });
-          this.value = value;
+        if (detail.path) {
+          var propPath = detail.path.split('.').slice(1);
+          var obj = property.value;
+          valuePath = valuePath.concat(propPath);
+
+          while (propPath.length > 1) {
+            obj = obj[propPath.shift()]
+          }
+
+          obj[propPath.pop()] = detail.value;
         } else {
-          var property = change.base[pathParts[1]];
-          var newPath = ['value', property.property].concat(pathParts.slice(3));
-
-          this.set(newPath, change.value);
+          property.value = detail.value;
         }
+        this.set(valuePath, detail.value);
+      },
+      _setValue: function() {
+        var value = {};
+        this._schemaProperties.forEach(function (property) {
+          value[property.property] = property.value;
+        });
+        this.value = value;
+      },
+      _buildForm: function() {
+        var ctx = this;
+        this._schemaProperties.forEach(function(property) {
+          var el = null;
+          if (ctx._isSchemaValue(property.type)) {
+            el = ctx.create('paper-input', {
+              label: property.label,
+              name: property.property,
+              value: ctx.value[property.property] || ''
+            });
+            ctx.listen(el, 'value-changed', '_schemaPropertyChanged');
+            el.schemaProperty = property;
+            Polymer.dom(ctx.$.form).appendChild(el);
+          } else if (ctx._isSchemaObject(property.type)) {
+            el = ctx.create('eco-schema-object', {
+              label: property.label,
+              value: ctx.value[property.property] || {}
+            });
+            el.schemaProperty = property;
+            ctx.listen(el, 'value-changed', '_schemaPropertyChanged');
+            el.schema = property.schema;
+            Polymer.dom(ctx.$.form).appendChild(el);
+
+          }
+        });
       },
       _schemaChanged: function() {
         this._schemaProperties = this._buildSchemaProperties(this.schema);
+        this._buildForm();
+        this._setValue();
       },
       _isSchemaValue: function(type) {
         if (Array.isArray(type)) {
