@@ -79,14 +79,14 @@
           el = this.create('paper-input', {
             label: schema.label,
             name: schema.property,
-            value: this.value[schema.property] || ''
+            value: ''
           });
           this.listen(el, 'value-changed', '_schemaArrayItemChanged');
           el.schemaProperty = schema;
         } else if (this._isSchemaObject(schema.type)) {
           el = this.create('eco-schema-object', {
             label: schema.label,
-            value: this.value[schema.property] || {}
+            value: {}
           });
           el.schemaProperty = schema;
           this.listen(el, 'value-changed', '_schemaArrayItemChanged');
@@ -94,11 +94,11 @@
         } else if (this._isSchemaArray(schema.type)) {
           el = this.create('eco-schema-array', {
             label: schema.label,
-            value: this.value[schema.property] || {}
+            value: []
           });
           el.schemaProperty = schema;
           this.listen(el, 'value-changed', '_schemaArrayItemChanged');
-          el.schema = schema.schema;
+          el.schema = schema;
         }
 
         return el;
