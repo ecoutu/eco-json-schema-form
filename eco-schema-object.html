@@ -21,6 +21,7 @@
 
       <div class="flex header" hidden$="[[!label]]">[[label]]</div>
       <div id="form"></div>
+
     </div>
 
   </template>
@@ -73,15 +74,7 @@
         var valuePath = ['value', property.property];
 
         if (detail.path) {
-          var propPath = detail.path.split('.').slice(1);
-          var obj = property.value;
-          valuePath = valuePath.concat(propPath);
-
-          while (propPath.length > 1) {
-            obj = obj[propPath.shift()]
-          }
-
-          obj[propPath.pop()] = detail.value;
+          valuePath = valuePath.concat(detail.path.split('.').slice(1));
         } else {
           property.value = detail.value;
         }
@@ -116,7 +109,15 @@
             ctx.listen(el, 'value-changed', '_schemaPropertyChanged');
             el.schema = property.schema;
             Polymer.dom(ctx.$.form).appendChild(el);
-
+          } else if (ctx._isSchemaArray(property.type)) {
+            el = ctx.create('eco-schema-array', {
+              label: property.label,
+              value: ctx.value[property.property] || {}
+            });
+            el.schemaProperty = property;
+            ctx.listen(el, 'value-changed', '_schemaPropertyChanged');
+            el.schema = property.schema;
+            Polymer.dom(ctx.$.form).appendChild(el);
           }
         });
       },
