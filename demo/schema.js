@@ -7,29 +7,9 @@ var demoSchema = {
       "title": "Branch",
       "type": "string"
     },
-    "names": {
-      "title": "a",
-      "type": "array",
-      "items": {
-        "title": "b",
-        "type": "object",
-        "properties": {
-          "c": {
-            "title": "c",
-            "type": "array",
-            "items": {
-              "title": "d",
-              "type": "object",
-              "properties": {
-                "e": {
-                  "type": "string",
-                  "title": "e"
-                }
-              }
-            }
-          }
-        }
-      }
+    "name": {
+      "title": "Name",
+      "type": "string"
     },
     "address": {
       "title": "Address",
@@ -68,21 +48,7 @@ var demoSchema = {
           },
           "phoneNumber": {
             "title": "Phone Number",
-            "type": "object",
-            "properties": {
-              "areaCode": {
-                "title": "Area Code",
-                "type": "string"
-              },
-              "firstPart": {
-                "title": "First Part",
-                "type": "string"
-              },
-              "secondPart": {
-                "title": "Second Part",
-                "type": "string"
-              }
-            }
+            "type": "string"
           }
         }
       }
