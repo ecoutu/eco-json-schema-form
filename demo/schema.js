@@ -8,12 +8,23 @@ var demoSchema = {
       "type": "string"
     },
     "names": {
-      "title": "Names",
+      "title": "a",
       "type": "array",
       "items": {
-        "title": "Name",
-        "type": "string",
-        "minLength": 2
+        "title": "b",
+        "type": "array",
+        "items": {
+          "title": "c",
+          "type": "array",
+          "items": {
+            "title": "d",
+            "type": "array",
+            "items": {
+              "title": "e",
+              "type": "string"
+            }
+          }
+        }
       }
     },
     "address": {
@@ -53,7 +64,21 @@ var demoSchema = {
           },
           "phoneNumber": {
             "title": "Phone Number",
-            "type": "string"
+            "type": "object",
+            "properties": {
+              "areaCode": {
+                "title": "Area Code",
+                "type": "string"
+              },
+              "firstPart": {
+                "title": "First Part",
+                "type": "string"
+              },
+              "secondPart": {
+                "title": "Second Part",
+                "type": "string"
+              }
+            }
           }
         }
       }

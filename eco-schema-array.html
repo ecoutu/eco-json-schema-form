@@ -52,6 +52,9 @@
       observers: [
         '_schemaArraySplicesChanged(_schemaArrayItems.splices)'
       ],
+      ready: function() {
+
+      },
       _buildSchemaArrayItems: function(schema) {
         if (this.value && this.value.length) {
           return this.value.map(function(item) {
@@ -75,7 +78,7 @@
 
         console.group(this.schema.title, '_schemaArraySplicesChanged');
 
-        console.log('_schemaArraySplicesChanged', arguments);
+        console.log('_schemaArrayItemChanged', detail, this.value);
 
         if (detail.keySplices) {
           console.error('Got keySplices, don\'t know what to do with them!');
@@ -107,8 +110,6 @@
                 Polymer.dom(ctx.$.form).appendChild(el);
               }
 
-
-
               if (item.schema) {
                 el.schema = item.schema;
               }
@@ -119,26 +120,23 @@
             }
           }
 
-//          debugger;
+          console.log('value before splice', ctx.value);
+          console.log('args for splice', args);
           ctx.splice.apply(ctx, args);
+          console.log('value after splice', ctx.value);
         });
 
         console.groupEnd();
       },
       _schemaArrayItemChanged: function(event, detail) {
-//        var value =
-//        var arrayEls = Array.prototype.slice.apply(this.$.form.children);
-//        var itemIndex = arrayEls.indexOf(event.target);
-//        var valuePath = ['value', itemIndex];
-//
-//        if (detail.path) {
-//          valuePath = valuePath.concat(detail.path.split('.').slice(1));
-//        }
-//
-//        this.set(valuePath, detail.value);
+
+        if (detail.path && /\.length$/.test(detail.path)) {
+          return;
+        }
+
         console.group(this.schema.title, '_schemaArrayItemChanged');
 
-        console.log('_schemaArrayItemChanged', arguments);
+        console.log('_schemaArrayItemChanged', detail, this.value);
 
         var ctx = this;
         var item = event.target.schemaArrayItem;
@@ -157,19 +155,24 @@
 
             if (splice.addedCount) {
               for (var i = splice.index, ii = splice.index + splice.addedCount; i < ii; i++) {
-                args.push(splice.object[i]);
+//                args.push(splice.object[i]);
+                ctx.set(path.concat([i]), splice.object[i])
               }
             }
 
+            console.log('value before splice', ctx.value);
+            console.log('args for splice', args);
             ctx.splice.apply(ctx, args);
+            console.log('value after splice', ctx.value);
           });
-        } else if (detail.path && /\.length$/.test(detail.path)) {
-          // do nothing
         } else if (detail.path) {
           var path = path.concat(detail.path.split('.').slice(1));
+          console.log('path for set', path);
           this.set(path, detail.value);
         } else {
-          this.splice('value', index, 1, detail.value);
+          console.log('top level splice')
+//          this.splice('value', index, 1, detail.value);
+          this.set(path, detail.value);
         }
 
         console.groupEnd();

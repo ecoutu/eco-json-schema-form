@@ -70,15 +70,19 @@
         });
       },
       _schemaPropertyChanged: function (event, detail) {
-        console.group(this.schema.title, '_schemaPropertyChanged');
 
-        console.log(detail);
+        if (detail.path && /\.length$/.test(detail.path)) {
+          return;
+        }
+
+        console.group(this.schema.title, '_schemaPropertyChanged');
 
         var ctx = this;
         var property = event.target.schemaProperty;
         var path = ['value', property.property];
 
         if (detail.path && /\.splices$/.test(detail.path)) {
+          console.log(detail.path);
           path = path.concat(detail.path.split('.').slice(1, -1));
 
           if (detail.value.keySplices) {
@@ -90,19 +94,19 @@
 
             if (splice.addedCount) {
               for (var i = splice.index, ii = splice.index + splice.addedCount; i < ii; i++) {
+                ctx.set(path.concat([i]), splice.object[i]);
 //                args.push(splice.object[i]);
-                ctx.notifyPath(path.concat([i]));
               }
             }
 
-//            console.log('args for splice', args)
-            console.log('path for notifyPath', path);
+            console.log('value before splice', ctx.value);
+            console.log('args for splice', args)
+//            debugger;
 //            ctx.splice.apply(ctx, args);
-            ctx.notifyPath(path);
+            console.log('value after splice', ctx.value);
           });
-        } else if (detail.path && /\.length$/.test(detail.path)) {
-          console.log('not doing anything for .length');
         } else if (detail.path) {
+          console.log(detail.path);
           path = path.concat(detail.path.split('.').slice(1));
           this.set(path, detail.value);
         } else {
