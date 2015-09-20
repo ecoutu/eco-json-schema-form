@@ -12,16 +12,20 @@ var demoSchema = {
       "type": "array",
       "items": {
         "title": "b",
-        "type": "array",
-        "items": {
-          "title": "c",
-          "type": "array",
-          "items": {
-            "title": "d",
+        "type": "object",
+        "properties": {
+          "c": {
+            "title": "c",
             "type": "array",
             "items": {
-              "title": "e",
-              "type": "string"
+              "title": "d",
+              "type": "object",
+              "properties": {
+                "e": {
+                  "type": "string",
+                  "title": "e"
+                }
+              }
             }
           }
         }

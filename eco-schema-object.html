@@ -77,8 +77,6 @@
           return;
         }
 
-        console.group(this.schema.title, '_schemaPropertyChanged');
-
         var ctx = this;
         var property = event.target.schemaProperty;
         var path = ['value', property.property];
@@ -91,21 +89,21 @@
           }
 
           detail.value.indexSplices.forEach(function(splice) {
+            var args = [path.join('.'), splice.index, splice.removed.length];
             if (splice.addedCount) {
               for (var i = splice.index, ii = splice.index + splice.addedCount; i < ii; i++) {
-                console.log(path.concat([i]), splice.object[i]);
-                ctx.set(path.concat([i]), splice.object[i]);
+                args.push(ctx._deepClone(splice.object[i]));
               }
+              ctx.splice.apply(ctx, args);
             }
           });
         } else if (detail.path) {
           path = path.concat(detail.path.split('.').slice(1));
-          this.set(path, detail.value);
+          this.set(path, this._deepClone(detail.value));
         } else {
           property.value = detail.value;
-          this.set(path, detail.value);
+          this.set(path, this._deepClone(detail.value));
         }
-        console.groupEnd();
       },
       _setValue: function() {
         var value = {};
@@ -152,6 +150,9 @@
         this._schemaProperties = this._buildSchemaProperties(this.schema);
         this._buildForm();
         this._setValue();
+      },
+      _deepClone: function(o) {
+        return JSON.parse(JSON.stringify(o));
       },
       _isSchemaValue: function(type) {
         if (Array.isArray(type)) {
