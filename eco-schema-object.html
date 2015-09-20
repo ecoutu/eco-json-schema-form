@@ -106,9 +106,10 @@
         }
       },
       _setValue: function() {
+        var ctx = this;
         var value = {};
         this._schemaProperties.forEach(function (property) {
-          value[property.property] = property.value;
+          value[property.property] = ctx._deepClone(property.value);
         });
         this.value = value;
       },
