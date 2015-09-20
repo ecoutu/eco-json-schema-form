@@ -44,9 +44,11 @@
         }
       },
       _buildSchemaProperties: function(schema) {
+
         if (!schema.properties) {
           return [];
         }
+
         var ctx = this;
         return Object.keys(schema.properties).map(function(key) {
           var property = schema.properties[key];
@@ -75,14 +77,11 @@
           return;
         }
 
-        console.group(this.schema.title, '_schemaPropertyChanged');
-
         var ctx = this;
         var property = event.target.schemaProperty;
         var path = ['value', property.property];
 
         if (detail.path && /\.splices$/.test(detail.path)) {
-          console.log(detail.path);
           path = path.concat(detail.path.split('.').slice(1, -1));
 
           if (detail.value.keySplices) {
@@ -90,30 +89,19 @@
           }
 
           detail.value.indexSplices.forEach(function(splice) {
-            var args = [path.join('.'), splice.index, splice.removed.length];
-
             if (splice.addedCount) {
               for (var i = splice.index, ii = splice.index + splice.addedCount; i < ii; i++) {
                 ctx.set(path.concat([i]), splice.object[i]);
-//                args.push(splice.object[i]);
               }
             }
-
-            console.log('value before splice', ctx.value);
-            console.log('args for splice', args)
-//            debugger;
-//            ctx.splice.apply(ctx, args);
-            console.log('value after splice', ctx.value);
           });
         } else if (detail.path) {
-          console.log(detail.path);
           path = path.concat(detail.path.split('.').slice(1));
           this.set(path, detail.value);
         } else {
           property.value = detail.value;
           this.set(path, detail.value);
         }
-        console.groupEnd();
       },
       _setValue: function() {
         var value = {};

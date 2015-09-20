@@ -70,15 +70,12 @@
         }
       },
       _schemaArraySplicesChanged: function(detail) {
-        var ctx = this;
 
         if (!detail) {
           return console.error('detail is undefined');
         }
 
-        console.group(this.schema.title, '_schemaArraySplicesChanged');
-
-        console.log('_schemaArrayItemChanged', detail, this.value);
+        var ctx = this;
 
         if (detail.keySplices) {
           console.error('Got keySplices, don\'t know what to do with them!');
@@ -119,11 +116,7 @@
               args.push(el.value);
             }
           }
-
-          console.log('value before splice', ctx.value);
-          console.log('args for splice', args);
           ctx.splice.apply(ctx, args);
-          console.log('value after splice', ctx.value);
         });
 
         console.groupEnd();
@@ -133,10 +126,6 @@
         if (detail.path && /\.length$/.test(detail.path)) {
           return;
         }
-
-        console.group(this.schema.title, '_schemaArrayItemChanged');
-
-        console.log('_schemaArrayItemChanged', detail, this.value);
 
         var ctx = this;
         var item = event.target.schemaArrayItem;
@@ -155,27 +144,16 @@
 
             if (splice.addedCount) {
               for (var i = splice.index, ii = splice.index + splice.addedCount; i < ii; i++) {
-//                args.push(splice.object[i]);
                 ctx.set(path.concat([i]), splice.object[i])
               }
             }
-
-            console.log('value before splice', ctx.value);
-            console.log('args for splice', args);
-            ctx.splice.apply(ctx, args);
-            console.log('value after splice', ctx.value);
           });
         } else if (detail.path) {
           var path = path.concat(detail.path.split('.').slice(1));
-          console.log('path for set', path);
           this.set(path, detail.value);
         } else {
-          console.log('top level splice')
-//          this.splice('value', index, 1, detail.value);
           this.set(path, detail.value);
         }
-
-        console.groupEnd();
       },
       _schemaChanged: function() {
         this._schemaArrayItems = this._buildSchemaArrayItems(this.schema);
