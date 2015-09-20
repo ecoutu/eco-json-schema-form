@@ -77,6 +77,8 @@
           return;
         }
 
+        console.group(this.schema.title, '_schemaPropertyChanged');
+
         var ctx = this;
         var property = event.target.schemaProperty;
         var path = ['value', property.property];
@@ -91,6 +93,7 @@
           detail.value.indexSplices.forEach(function(splice) {
             if (splice.addedCount) {
               for (var i = splice.index, ii = splice.index + splice.addedCount; i < ii; i++) {
+                console.log(path.concat([i]), splice.object[i]);
                 ctx.set(path.concat([i]), splice.object[i]);
               }
             }
@@ -102,6 +105,7 @@
           property.value = detail.value;
           this.set(path, detail.value);
         }
+        console.groupEnd();
       },
       _setValue: function() {
         var value = {};

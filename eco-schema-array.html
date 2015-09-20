@@ -125,31 +125,43 @@
           return;
         }
 
+        console.group(this.schema.title, '_schemaArrayItemChanged');
+
         var ctx = this;
         var item = event.target.schemaArrayItem;
         var index = this._schemaArrayItems.indexOf(item);
         var path = ['value', index];
+
+        console.log(index, item);
 
         if (detail.path && /\.splices$/.test(detail.path)) {
           path = path.concat(detail.path.split('.').slice(1, -1));
 
           if (detail.value.keySplices) {
             console.warn('Got keySplices, don\'t know what to do with them!');
+            debugger;
           }
 
           detail.value.indexSplices.forEach(function (splice) {
             if (splice.addedCount) {
               for (var i = splice.index, ii = splice.index + splice.addedCount; i < ii; i++) {
-                ctx.set(path.concat([i]), splice.object[i])
+                console.log('set', path.concat([i]), splice.object[i]);
+                ctx.set(path.concat([i]), splice.object[i]);
               }
             }
           });
         } else if (detail.path) {
           var path = path.concat(detail.path.split('.').slice(1));
-          this.set(path, detail.value);
+
+          console.log('old path', detail.path);
+          console.log('new path', path, detail.value);
+//          debugger;
+//          this.set(path, detail.value);
         } else {
+          console.log('no path');
           this.set(path, detail.value);
         }
+        console.groupEnd();
       },
       _schemaChanged: function() {
         this._schemaArrayItems = this._buildSchemaArrayItems(this.schema);
