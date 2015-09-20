@@ -118,8 +118,6 @@
           }
           ctx.splice.apply(ctx, args);
         });
-
-        console.groupEnd();
       },
       _schemaArrayItemChanged: function(event, detail) {
 
@@ -140,8 +138,6 @@
           }
 
           detail.value.indexSplices.forEach(function (splice) {
-            var args = [path.join('.'), splice.index, splice.removed.length];
-
             if (splice.addedCount) {
               for (var i = splice.index, ii = splice.index + splice.addedCount; i < ii; i++) {
                 ctx.set(path.concat([i]), splice.object[i])
