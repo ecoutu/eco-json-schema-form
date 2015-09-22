@@ -93,10 +93,12 @@
             for (var i = splice.index, ii = splice.index + splice.addedCount; i < ii; i++) {
               var item = splice.object[i];
 
-              var el = ctx.create(item.component, item.properties);
+              var el = ctx.create(item.component, {
+                label: item.label,
+                schema: item.schema,
+                schemaArrayItem: item
+              });
               var beforeEl = ctx.$.form.children[i];
-
-              el.schemaArrayItem = item;
 
               if (beforeEl) {
                 Polymer.dom(ctx.$.form).insertBefore(el, beforeEl);
@@ -104,13 +106,9 @@
                 Polymer.dom(ctx.$.form).appendChild(el);
               }
 
-              if (item.schema) {
-                el.schema = item.schema;
-              }
+              ctx.listen(el, item.valueProperty.replace(/([A-Z])/g, '-$1').toLowerCase() + '-changed', '_schemaArrayItemChanged');
 
-              ctx.listen(el, 'value-changed', '_schemaArrayItemChanged');
-
-              args.push(ctx._deepClone(el.value));
+              args.push(ctx._deepClone(el[item.valueProperty]));
             }
           }
           ctx.splice.apply(ctx, args);
@@ -166,10 +164,9 @@
       _onAddItem: function() {
         var schema = this.schema.items;
         var item = {
-          properties: {
-            label: schema.title
-          },
-          schema: schema
+          label: schema.title,
+          schema: schema,
+          valueProperty: schema.valueProperty || 'value'
         };
 
         if (schema.component) {

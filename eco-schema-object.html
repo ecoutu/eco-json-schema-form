@@ -62,7 +62,8 @@
             label: property.title || key,
             type: property.type,
             schema: property,
-            component: property.component
+            component: property.component,
+            valueProperty: property.valueProperty || 'value'
           };
 
           if (property.type === 'object') {
@@ -120,40 +121,30 @@
       _buildForm: function() {
         var ctx = this;
         this._schemaProperties.forEach(function(property) {
-          var el = null;
+          var valueProperty = property.valueProperty;
+          var component = null;
+
           if (property.component) {
-            el = ctx.create(property.component, {
-              label: property.label
-            });
-            el.schemaProperty = property;
-            ctx.listen(el, 'value-changed', '_schemaPropertyChanged');
-            el.schema = property.schema;
-            Polymer.dom(ctx.$.form).appendChild(el);
+            component = property.component;
           } else if (ctx._isSchemaValue(property.type)) {
-            el = ctx.create('paper-input', {
-              label: property.label,
-              name: property.property
-            });
-            ctx.listen(el, 'value-changed', '_schemaPropertyChanged');
-            el.schemaProperty = property;
-            Polymer.dom(ctx.$.form).appendChild(el);
+            component = 'paper-input';
           } else if (ctx._isSchemaObject(property.type)) {
-            el = ctx.create('eco-schema-object', {
-              label: property.label
-            });
-            el.schemaProperty = property;
-            ctx.listen(el, 'value-changed', '_schemaPropertyChanged');
-            el.schema = property.schema;
-            Polymer.dom(ctx.$.form).appendChild(el);
+            component = 'eco-schema-object';
           } else if (ctx._isSchemaArray(property.type)) {
-            el = ctx.create('eco-schema-array', {
-              label: property.label
-            });
-            el.schemaProperty = property;
-            ctx.listen(el, 'value-changed', '_schemaPropertyChanged');
-            el.schema = property.schema;
-            Polymer.dom(ctx.$.form).appendChild(el);
+            component = 'eco-schema-array';
+          } else {
+            return console.error('Unknown property type %s', property.type);
           }
+
+          var el = ctx.create(component, {
+            label: property.label,
+            schema: property.schema,
+            schemaProperty: property
+          });
+
+          property.value = el[valueProperty];
+          ctx.listen(el, valueProperty.replace(/([A-Z])/g, '-$1').toLowerCase() + '-changed', '_schemaPropertyChanged');
+          Polymer.dom(ctx.$.form).appendChild(el);
         });
       },
       _clearForm: function() {
@@ -167,8 +158,8 @@
       _schemaChanged: function() {
         this._clearForm();
         this._schemaProperties = this._buildSchemaProperties(this.schema);
-        this._setValue();
         this._buildForm();
+        this._setValue();
       },
       _deepClone: function(o) {
         return JSON.parse(JSON.stringify(o));
