@@ -43,25 +43,30 @@
           value: function() { return {}; }
         }
       },
+      ready: function() {
+
+      },
+      detached: function() {
+        this._clearForm();
+      },
       _buildSchemaProperties: function(schema) {
 
         if (!schema.properties) {
           return [];
         }
 
-        var ctx = this;
         return Object.keys(schema.properties).map(function(key) {
           var property = schema.properties[key];
           var edit = {
             property: key,
             label: property.title || key,
             type: property.type,
-            schema: property
+            schema: property,
+            component: property.component,
+            valueProperty: property.valueProperty || 'value'
           };
 
-          if (ctx.value[key]) {
-            edit.value = ctx.value[key];
-          } else if (property.type === 'object') {
+          if (property.type === 'object') {
             edit.value = {};
           } else if (property.type === 'array') {
             edit.value = [];
@@ -94,8 +99,8 @@
               for (var i = splice.index, ii = splice.index + splice.addedCount; i < ii; i++) {
                 args.push(ctx._deepClone(splice.object[i]));
               }
-              ctx.splice.apply(ctx, args);
             }
+            ctx.splice.apply(ctx, args);
           });
         } else if (detail.path) {
           path = path.concat(detail.path.split('.').slice(1));
@@ -116,38 +121,42 @@
       _buildForm: function() {
         var ctx = this;
         this._schemaProperties.forEach(function(property) {
-          var el = null;
-          if (ctx._isSchemaValue(property.type)) {
-            el = ctx.create('paper-input', {
-              label: property.label,
-              name: property.property,
-              value: ctx.value[property.property] || ''
-            });
-            ctx.listen(el, 'value-changed', '_schemaPropertyChanged');
-            el.schemaProperty = property;
-            Polymer.dom(ctx.$.form).appendChild(el);
+          var valueProperty = property.valueProperty;
+          var component = null;
+
+          if (property.component) {
+            component = property.component;
+          } else if (ctx._isSchemaValue(property.type)) {
+            component = 'paper-input';
           } else if (ctx._isSchemaObject(property.type)) {
-            el = ctx.create('eco-schema-object', {
-              label: property.label,
-              value: ctx.value[property.property] || {}
-            });
-            el.schemaProperty = property;
-            ctx.listen(el, 'value-changed', '_schemaPropertyChanged');
-            el.schema = property.schema;
-            Polymer.dom(ctx.$.form).appendChild(el);
+            component = 'eco-schema-object';
           } else if (ctx._isSchemaArray(property.type)) {
-            el = ctx.create('eco-schema-array', {
-              label: property.label,
-              value: ctx.value[property.property] || []
-            });
-            el.schemaProperty = property;
-            ctx.listen(el, 'value-changed', '_schemaPropertyChanged');
-            el.schema = property.schema;
-            Polymer.dom(ctx.$.form).appendChild(el);
+            component = 'eco-schema-array';
+          } else {
+            return console.error('Unknown property type %s', property.type);
           }
+
+          var el = ctx.create(component, {
+            label: property.label,
+            schema: property.schema,
+            schemaProperty: property
+          });
+
+          property.value = el[valueProperty];
+          ctx.listen(el, valueProperty.replace(/([A-Z])/g, '-$1').toLowerCase() + '-changed', '_schemaPropertyChanged');
+          Polymer.dom(ctx.$.form).appendChild(el);
         });
       },
+      _clearForm: function() {
+        var formEl = Polymer.dom(this.$.form);
+
+        while (formEl.firstChild) {
+          this.unlisten(formEl.firstChild, 'value-changed', '_schemaPropertyChanged');
+          formEl.removeChild(formEl.firstChild);
+        }
+      },
       _schemaChanged: function() {
+        this._clearForm();
         this._schemaProperties = this._buildSchemaProperties(this.schema);
         this._buildForm();
         this._setValue();
