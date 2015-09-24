@@ -99,8 +99,8 @@
               for (var i = splice.index, ii = splice.index + splice.addedCount; i < ii; i++) {
                 args.push(ctx._deepClone(splice.object[i]));
               }
-              ctx.splice.apply(ctx, args);
             }
+            ctx.splice.apply(ctx, args);
           });
         } else if (detail.path) {
           path = path.concat(detail.path.split('.').slice(1));
