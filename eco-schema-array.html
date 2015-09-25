@@ -162,7 +162,6 @@
       },
       _unlistenRowEl: function(el) {
         var item = el.firstChild.schemaArrayItem;
-        debugger;
         this.unlisten(el.children[0], item.valueProperty.replace(/([A-Z])/g, '-$1').toLowerCase() + '-changed', '_schemaPropertyChanged');
         this.unlisten(el.children[1], 'tap', '_onRemoveItem');
       },
