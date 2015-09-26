@@ -87,23 +87,45 @@
         var path = ['value', property.property];
 
         if (detail.path && /\.splices$/.test(detail.path)) {
-          path = path.concat(detail.path.split('.').slice(1, -1));
+          var parts = detail.path.split('.').slice(1, -1);
+          while (parts.length) {
+            path.push(parts.shift());
+            if (property.keyMap && property.keyMap[path.join('.')]) {
+              path = property.keyMap[path.join('.')].split('.');
+            }
+          }
 
           if (detail.value.keySplices) {
-            console.warn('Got keySplices, don\'t know what to do with them!');
+            if (property.keyMap) {
+              detail.value.keySplices.forEach(function(splice) {
+                splice.removed.forEach(function (k) {
+                  delete property.keyMap[path.concat([k]).join('.')];
+                });
+              });
+            }
           }
 
           detail.value.indexSplices.forEach(function(splice) {
             var args = [path.join('.'), splice.index, splice.removed.length];
             if (splice.addedCount) {
-              for (var i = splice.index, ii = splice.index + splice.addedCount; i < ii; i++) {
-                args.push(ctx._deepClone(splice.object[i]));
+              for (var i = 0, ii = splice.addedCount; i < ii; i++) {
+                if (splice.addedKeys && splice.addedKeys[i]) {
+                  property.keyMap = property.keyMap || {};
+                  property.keyMap[path.concat([splice.addedKeys[i]]).join('.')] = path.concat([i + splice.index]).join('.');
+                }
+                args.push(ctx._deepClone(splice.object[i + splice.index]));
               }
             }
             ctx.splice.apply(ctx, args);
           });
         } else if (detail.path) {
-          path = path.concat(detail.path.split('.').slice(1));
+          var parts = detail.path.split('.').slice(1);
+          while (parts.length) {
+            path.push(parts.shift());
+            if (property.keyMap && property.keyMap[path.join('.')]) {
+              path = property.keyMap[path.join('.')].split('.');
+            }
+          }
           this.set(path, this._deepClone(detail.value));
         } else {
           property.value = detail.value;
