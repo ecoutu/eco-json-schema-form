@@ -3,9 +3,8 @@
 
 <dom-module id="eco-schema-object">
 
-  <link rel="import" href="../paper-input/paper-input.html"/>
-
   <link rel="import" href="./eco-schema-array.html"/>
+  <link rel="import" href="./eco-schema-input.html"/>
 
   <template>
 
@@ -149,7 +148,7 @@
           if (property.component) {
             component = property.component;
           } else if (ctx._isSchemaValue(property.type)) {
-            component = 'paper-input';
+            component = 'eco-schema-input';
           } else if (ctx._isSchemaObject(property.type)) {
             component = 'eco-schema-object';
           } else if (ctx._isSchemaArray(property.type)) {

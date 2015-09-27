@@ -1,0 +1,68 @@
+<link rel="import" href="../polymer/polymer.html"/>
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html"/>
+
+<dom-module id="eco-schema-input">
+
+  <link rel="import" href="../paper-input/paper-input.html"/>
+
+  <template>
+
+    <style>
+
+      :host {
+        display: block;
+      }
+
+    </style>
+
+    <paper-input id="input" value="{{value}}"></paper-input>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'eco-schema-input',
+      properties: {
+        schema: {
+          type: Object,
+          observer: '_schemaChanged'
+        },
+        value: {
+          type: Object,
+          notify: true,
+          value: function () {
+            return '';
+          }
+        },
+        error: {
+          type: String,
+          observer: '_errorChanged',
+          value: null
+        }
+      },
+      ready: function () {
+
+      },
+      detached: function () {
+
+      },
+      _schemaChanged: function () {
+        var schema = this.schema;
+
+        if (schema.title) {
+          this.$.input.label = schema.title;
+        }
+      },
+      _errorChanged: function() {
+        if (this.error) {
+          this.$.input.errorMessage = this.error;
+          this.$.input.invalid = true;
+        } else {
+          this.$.input.invalid = false;
+          this.$.input.errorMessage = null;
+        }
+      }
+    });
+  </script>
+
+</dom-module>
