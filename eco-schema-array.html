@@ -5,8 +5,8 @@
 
   <link rel="import" href="../iron-icons/iron-icons.html"/>
   <link rel="import" href="../paper-icon-button/paper-icon-button.html"/>
-  <link rel="import" href="../paper-input/paper-input.html"/>
 
+  <link rel="import" href="./eco-schema-input.html"/>
   <link rel="import" href="./eco-schema-object.html"/>
 
   <template>
@@ -187,7 +187,7 @@
         if (schema.component) {
           item.component = schema.component;
         } else if (this._isSchemaValue(schema.type)) {
-          item.component = 'paper-input';
+          item.component = 'eco-schema-input';
         } else if (this._isSchemaObject(schema.type)) {
           item.component = 'eco-schema-object';
         } else if (this._isSchemaArray(schema.type)) {
