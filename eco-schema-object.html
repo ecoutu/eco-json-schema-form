@@ -40,6 +40,10 @@
           type: Object,
           notify: true,
           value: function() { return {}; }
+        },
+        error: {
+          type: Object,
+          observer: '_errorChanged'
         }
       },
       ready: function() {
@@ -163,6 +167,8 @@
             schemaProperty: property
           });
 
+          el.setAttribute('name', property.property);
+
           property.value = el[valueProperty];
           ctx.listen(el, valueProperty.replace(/([A-Z])/g, '-$1').toLowerCase() + '-changed', '_schemaPropertyChanged');
           Polymer.dom(ctx.$.form).appendChild(el);
@@ -184,6 +190,18 @@
         this._schemaProperties = this._buildSchemaProperties(this.schema);
         this._buildForm();
         this._setValue();
+      },
+      _errorChanged: function() {
+        var ctx = this;
+        if (this.error) {
+          Object.keys(this.error).forEach(function (propName) {
+            ctx.$$('[name="' + propName + '"]').error = ctx.error[propName];
+          });
+        } else {
+          Polymer.dom(this.$.form).childNodes.forEach(function(node) {
+            node.error = null;
+          });
+        }
       },
       _deepClone: function(o) {
         return JSON.parse(JSON.stringify(o));
