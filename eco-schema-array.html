@@ -83,9 +83,7 @@
 
           if (splice.removed && splice.removed.length) {
             for (var i = splice.index, ii = splice.index + splice.removed.length; i < ii; i++) {
-              var el = ctx.$.form.children[i];
-              ctx._unlistenRowEl(el);
-              Polymer.dom(ctx.$.form).removeChild(el);
+              ctx._removeArrayEl(ctx.$.form.children[i]);
             }
           }
 
@@ -160,17 +158,17 @@
           this.splice('value', index, 1, this._deepClone(detail.value));
         }
       },
-      _unlistenRowEl: function(el) {
-        var item = el.firstChild.schemaArrayItem;
-        this.unlisten(el.children[0], item.valueProperty.replace(/([A-Z])/g, '-$1').toLowerCase() + '-changed', '_schemaPropertyChanged');
-        this.unlisten(el.children[1], 'tap', '_onRemoveItem');
+      _removeArrayEl: function(el) {
+        var polyEl = Polymer.dom(el);
+        this.unlisten(polyEl.childNodes[0], el.firstChild.schemaArrayItem.valueProperty.replace(/([A-Z])/g, '-$1').toLowerCase() + '-changed', '_schemaArrayItemChanged');
+        this.unlisten(polyEl.childNodes[1], 'tap', '_onRemoveItem');
+        el.schemaArrayItem = null;
+        Polymer.dom(this.$.form).removeChild(el);
       },
       _clearForm: function() {
         var formEl = Polymer.dom(this.$.form);
-
         while (formEl.firstChild) {
-          this._unlistenRowEl(formEl.firstChild);
-          formEl.removeChild(formEl.firstChild);
+          this._removeArrayEl(formEl.firstChild);
         }
       },
       _schemaChanged: function() {

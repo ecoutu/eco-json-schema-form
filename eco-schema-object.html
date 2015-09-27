@@ -46,7 +46,7 @@
       ready: function() {
 
       },
-      detached: function() {
+      detached: function () {
         this._clearForm();
       },
       _buildSchemaProperties: function(schema) {
@@ -169,12 +169,15 @@
           Polymer.dom(ctx.$.form).appendChild(el);
         });
       },
-      _clearForm: function() {
+      _removePropertyEl: function (el) {
+        this.unlisten(el, el.schemaProperty.valueProperty.replace(/([A-Z])/g, '-$1').toLowerCase() + '-changed', '_schemaPropertyChanged');
+        el.schemaProperty = null;
+        Polymer.dom(this.$.form).removeChild(el);
+      },
+      _clearForm: function () {
         var formEl = Polymer.dom(this.$.form);
-
         while (formEl.firstChild) {
-          this.unlisten(formEl.firstChild, 'value-changed', '_schemaPropertyChanged');
-          formEl.removeChild(formEl.firstChild);
+          this._removePropertyEl(formEl.firstChild);
         }
       },
       _schemaChanged: function() {
