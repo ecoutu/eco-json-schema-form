@@ -58,8 +58,8 @@
       detached: function() {
         this._clearForm();
       },
-      _buildSchemaArrayItems: function(schema) {
-        return [];
+      _buildSchemaArrayItems: function() {
+        this._schemaArrayItems = [];
       },
       _setValue: function() {
         this.value = this._schemaArrayItems.map(function(item) {
@@ -91,7 +91,7 @@
             for (var i = splice.index, ii = splice.index + splice.addedCount; i < ii; i++) {
               var item = splice.object[i];
 
-              var componentEl = ctx.create(item.component, {
+              var componentEl = ctx.create(item.component.name, {
                 label: item.label,
                 schema: item.schema,
                 schemaArrayItem: item
@@ -116,9 +116,9 @@
                 Polymer.dom(ctx.$.form).appendChild(containerEl);
               }
 
-              ctx.listen(componentEl, item.valueProperty.replace(/([A-Z])/g, '-$1').toLowerCase() + '-changed', '_schemaArrayItemChanged');
+              ctx.listen(componentEl, item.component.valueProperty.replace(/([A-Z])/g, '-$1').toLowerCase() + '-changed', '_schemaArrayItemChanged');
 
-              args.push(ctx._deepClone(componentEl[item.valueProperty]));
+              args.push(ctx._deepClone(componentEl[item.component.valueProperty]));
             }
           }
           ctx.splice.apply(ctx, args);
@@ -160,7 +160,7 @@
       },
       _removeArrayEl: function(el) {
         var polyEl = Polymer.dom(el);
-        this.unlisten(polyEl.childNodes[0], el.firstChild.schemaArrayItem.valueProperty.replace(/([A-Z])/g, '-$1').toLowerCase() + '-changed', '_schemaArrayItemChanged');
+        this.unlisten(polyEl.childNodes[0], polyEl.firstChild.schemaArrayItem.component.valueProperty.replace(/([A-Z])/g, '-$1').toLowerCase() + '-changed', '_schemaArrayItemChanged');
         this.unlisten(polyEl.childNodes[1], 'tap', '_onRemoveItem');
         el.schemaArrayItem = null;
         Polymer.dom(this.$.form).removeChild(el);
@@ -173,7 +173,7 @@
       },
       _schemaChanged: function() {
         this._clearForm();
-        this._schemaArrayItems = this._buildSchemaArrayItems(this.schema);
+        this._buildSchemaArrayItems();
         this._setValue();
       },
       _onAddItem: function() {
@@ -181,17 +181,23 @@
         var item = {
           label: schema.title,
           schema: schema,
-          valueProperty: schema.valueProperty || 'value'
+          component: schema.component || {}
         };
 
-        if (schema.component) {
-          item.component = schema.component;
-        } else if (this._isSchemaValue(schema.type)) {
-          item.component = 'eco-schema-input';
-        } else if (this._isSchemaObject(schema.type)) {
-          item.component = 'eco-schema-object';
-        } else if (this._isSchemaArray(schema.type)) {
-          item.component = 'eco-schema-array';
+        if (!item.component.valueProperty) {
+          item.component.valueProperty = 'value';
+        }
+
+        if (!item.component.name) {
+          if (this._isSchemaValue(schema.type)) {
+            item.component.name = 'eco-schema-input';
+          } else if (this._isSchemaObject(schema.type)) {
+            item.component.name = 'eco-schema-object';
+          } else if (this._isSchemaArray(schema.type)) {
+            item.component.name = 'eco-schema-array';
+          } else {
+            return console.error('Unknown item type %s', schema.type);
+          }
         }
 
         this.push('_schemaArrayItems', item);
