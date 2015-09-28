@@ -52,31 +52,36 @@
       detached: function () {
         this._clearForm();
       },
-      _buildSchemaProperties: function(schema) {
+      _buildSchemaProperties: function() {
+        var ctx = this;
 
-        if (!schema.properties) {
-          return [];
-        }
-
-        return Object.keys(schema.properties).map(function(key) {
-          var property = schema.properties[key];
-          var edit = {
+        this._schemaProperties = Object.keys(this.schema.properties || []).map(function(key) {
+          var schema = ctx.schema.properties[key];
+          var property = {
             property: key,
-            label: property.title || key,
-            type: property.type,
-            schema: property,
-            component: property.component,
-            valueProperty: property.valueProperty || 'value'
+            label: schema.title || key,
+            schema: schema,
+            component: schema.component || {}
           };
 
-          if (property.type === 'object') {
-            edit.value = {};
-          } else if (property.type === 'array') {
-            edit.value = [];
-          } else {
-            edit.value = '';
+          if (!property.component.valueProperty) {
+            property.component.valueProperty = 'value';
           }
-          return edit;
+
+          if (ctx._isSchemaValue(schema.type)) {
+            property.component.name = property.component.name || 'eco-schema-input';
+            property.value = '';
+          } else if (ctx._isSchemaObject(schema.type)) {
+            property.component.name = property.component.name || 'eco-schema-object';
+            property.value = {};
+          } else if (ctx._isSchemaArray(schema.type)) {
+            property.component.name = property.component.name || 'eco-schema-array';
+            property.value = [];
+          } else {
+            return console.error('Unknown property type %s', schema.type);
+          }
+
+          return property;
         });
       },
       _schemaPropertyChanged: function (event, detail) {
@@ -146,22 +151,8 @@
       _buildForm: function() {
         var ctx = this;
         this._schemaProperties.forEach(function(property) {
-          var valueProperty = property.valueProperty;
-          var component = null;
 
-          if (property.component) {
-            component = property.component;
-          } else if (ctx._isSchemaValue(property.type)) {
-            component = 'eco-schema-input';
-          } else if (ctx._isSchemaObject(property.type)) {
-            component = 'eco-schema-object';
-          } else if (ctx._isSchemaArray(property.type)) {
-            component = 'eco-schema-array';
-          } else {
-            return console.error('Unknown property type %s', property.type);
-          }
-
-          var el = ctx.create(component, {
+          var el = ctx.create(property.component.name, {
             label: property.label,
             schema: property.schema,
             schemaProperty: property
@@ -169,13 +160,13 @@
 
           el.setAttribute('name', property.property);
 
-          property.value = el[valueProperty];
-          ctx.listen(el, valueProperty.replace(/([A-Z])/g, '-$1').toLowerCase() + '-changed', '_schemaPropertyChanged');
+          property.value = el[property.component.valueProperty];
+          ctx.listen(el, property.component.valueProperty.replace(/([A-Z])/g, '-$1').toLowerCase() + '-changed', '_schemaPropertyChanged');
           Polymer.dom(ctx.$.form).appendChild(el);
         });
       },
       _removePropertyEl: function (el) {
-        this.unlisten(el, el.schemaProperty.valueProperty.replace(/([A-Z])/g, '-$1').toLowerCase() + '-changed', '_schemaPropertyChanged');
+        this.unlisten(el, el.schemaProperty.component.valueProperty.replace(/([A-Z])/g, '-$1').toLowerCase() + '-changed', '_schemaPropertyChanged');
         el.schemaProperty = null;
         Polymer.dom(this.$.form).removeChild(el);
       },
@@ -187,7 +178,7 @@
       },
       _schemaChanged: function() {
         this._clearForm();
-        this._schemaProperties = this._buildSchemaProperties(this.schema);
+        this._buildSchemaProperties();
         this._buildForm();
         this._setValue();
       },
