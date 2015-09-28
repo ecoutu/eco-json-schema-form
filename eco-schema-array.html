@@ -47,6 +47,10 @@
           type: Array,
           notify: true,
           value: function() { return []; }
+        },
+        error: {
+          type: Object,
+          observer: '_errorChanged'
         }
       },
       observers: [
@@ -175,6 +179,16 @@
         this._clearForm();
         this._buildSchemaArrayItems();
         this._setValue();
+      },
+      _errorChanged: function() {
+        var ctx = this;
+        Polymer.dom(this.$.form).childNodes.forEach(function(rowEl, idx) {
+          if (ctx.error && ctx.error[idx]) {
+            Polymer.dom(rowEl).childNodes[0].error = ctx.error[idx];
+          } else {
+            Polymer.dom(rowEl).childNodes[0].error = null;
+          }
+        });
       },
       _onAddItem: function() {
         var schema = this.schema.items;
