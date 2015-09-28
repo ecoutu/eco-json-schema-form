@@ -1,6 +1,131 @@
 <link rel="import" href="../polymer/polymer.html"/>
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html"/>
 
+<!--
+`eco-schema-object` takes in a JSON schema and builds a form, exposing a `value`
+property that represents an object described by the schema.
+
+Given the element:
+
+```
+<eco-schema-object schema="[[schema]]" value="{{value}}"></eco-schema-object>
+```
+
+And a JSON schema:
+
+```
+> this.schema = {
+  "$schema": "http://json-schema.org/schema#",
+  "title": "Contact",
+  "type": "object",
+  "properties": {
+    "name": {
+      "title": "Name",
+      "type": "string",
+      "minLength": 2
+    },
+    "phoneNumbers": {
+      "title": "Phone numbers",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "title": "Type",
+            "type": "string"
+          },
+          "phoneNumber": {
+            "title": "Phone Number",
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+A form will be generated, with the elements value looking something like this:
+
+```
+> this.value
+{
+  "name": "Eric",
+  "phoneNumbers": [
+    {
+      "type": "Mobile",
+      "phoneNumber": "123-456-7890"
+    }
+  ]
+}
+
+```
+
+Custom components for schema properties are supported by extending your JSON
+schema. For any schema sub-property (`properties` for `"type": "object"` and
+`items` for `"type": "array"` a `component` property may be specified, with
+the following options:
+
+- `component.name` - specifies the name of the custom component to use
+- `component.valueProperty` - specifies which property of the custom element
+  represents its value
+
+Example schema using custom components (note that `"valueProperty": "value"` is
+redundant in this case, `"valueProperty": "value"` will be the default if not specified):
+
+```
+> this.schema = {
+  "$schema": "http://json-schema.org/schema#",
+  "title": "Contact",
+  "type": "object",
+  "properties": {
+    "name": {
+      "title": "Name",
+      "type": "string",
+      "minLength": 2
+    },
+    "phoneNumbers": {
+      "title": "Phone numbers",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "title": "Type",
+            "type": "string"
+          },
+          "phoneNumber": {
+            "title": "Phone Number",
+            "type": "string",
+            "component": {
+              "name": "gold-phone-input",
+              "valueProperty": "value"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+External validation is supported via the `error` property. By providing an
+object tree with each leaf representing an error message for properties, the
+message will be attached to the appropriate input.
+
+Example, for the Contact schema:
+
+```
+el.error = {
+  "name": "String is too short (0 chars) minimum 2"
+}
+```
+
+@group eco Elements
+@element eco-schema-object
+@demo demo/index.html
+-->
+
 <dom-module id="eco-schema-object">
 
   <link rel="import" href="./eco-schema-array.html"/>
