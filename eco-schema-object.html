@@ -309,15 +309,14 @@ el.error = {
       },
       _errorChanged: function() {
         var ctx = this;
-        if (this.error) {
-          Object.keys(this.error).forEach(function (propName) {
-            ctx.$$('[name="' + propName + '"]').error = ctx.error[propName];
-          });
-        } else {
-          Polymer.dom(this.$.form).childNodes.forEach(function(node) {
-            node.error = null;
-          });
-        }
+        Polymer.dom(this.$.form).childNodes.forEach(function(el) {
+          var name = el.getAttribute('name');
+          if (ctx.error && ctx.error[name]) {
+            el.error = ctx.error[name];
+          } else {
+            el.error = null;
+          }
+        });
       },
       _deepClone: function(o) {
         return JSON.parse(JSON.stringify(o));
