@@ -137,16 +137,13 @@ el.error = {
 
       :host {
         display: block;
+        @apply(--layout-vertical);
       }
 
     </style>
 
-    <div class="vertical layout">
-
-      <div class="flex header" hidden$="[[!label]]">[[label]]</div>
-      <div id="form"></div>
-
-    </div>
+    <div class="header" hidden$="[[!label]]">[[label]]</div>
+    <div id="form"></div>
 
   </template>
 

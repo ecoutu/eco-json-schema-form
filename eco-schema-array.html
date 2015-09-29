@@ -15,20 +15,17 @@
 
       :host {
         display: block;
+        @apply(- -layout-vertical);
       }
 
     </style>
 
-    <div class="vertical layout">
-
-      <div class="horizontal center layout">
-        <div class="flex header" hidden$="[[!label]]">[[label]]</div>
-        <paper-icon-button icon="add" on-click="_onAddItem"></paper-icon-button>
-      </div>
-
-      <div id="form"></div>
-
+    <div class="horizontal center layout">
+      <div class="flex header" hidden$="[[!label]]">[[label]]</div>
+      <paper-icon-button icon="add" on-click="_onAddItem"></paper-icon-button>
     </div>
+
+    <div id="form"></div>
 
   </template>
 
