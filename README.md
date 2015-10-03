@@ -60,12 +60,67 @@ Where you will be given a `user` object that looks something like this:
 }
 ```
 
+## Supported
+
+### type: number
+
+- [ ] multipleOf
+- [ ] maximum
+- [ ] exclusiveMaximum
+- [ ] minimum
+- [ ] exclusiveMinimum
+
+### type: string
+
+- [ ] maxLength
+- [ ] minLength
+- [ ] pattern
+
+### type: array
+
+- [ ] items - object
+- [ ] items - array
+- [ ] additionalItems - boolean
+- [ ] additionalItems - object
+- [ ] maxItems
+- [ ] minItems
+- [ ] uniqueItems
+
+### type: object
+
+- [ ] maxProperties
+- [ ] minProperties
+- [ ] required
+- [ ] additionalProperties - boolean
+- [ ] additionalProperties - object
+- [ ] properties
+- [ ] patternProperties
+- [ ] dependencies, value is an object
+- [ ] dependencies, value is an array
+
+### misc
+
+- [ ] enum - number / integer
+- [ ] enum - string
+- [ ] enum - array
+- [ ] enum - object
+- [ ] allOf
+- [ ] anyOf
+- [ ] oneOf
+- [ ] not
+- [ ] definitions
+- [ ] title
+- [ ] description
+- [ ] default
+- [ ] format - date-time
+- [ ] format - email
+- [ ] format - hostname
+- [ ] format - ipv4
+- [ ] format - ipv6
+- [ ] format - uri
+
 ## Planned
 
 * Create an element that provides a single entry point, so there is no need to choose between `<eco-schema-object>` and `<eco-schema-array>`
 * Being able to set an initial value (eg, providing an instance of the schema for modification)
-* Specifying custom components for schemas/sub schemas
-* Validation
 * Specifying which fields to show
-* Maybe go back to using an observer for schema object. When schema changes, build `_schemaProperties`, have an observer listening on `_schemaProperties.*` that builds the form.
-* For object components, is it even necessary to keep an internal array for value representation?
