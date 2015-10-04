@@ -1,6 +1,6 @@
 eco-json-schema
 ===============
-Polymer 1.0 JSON Schema form builder
+[Polymer 1.0 JSON Schema form builder](http://ecoutu.github.io/eco-json-schema/components/eco-json-schema/)
 
 ## Description
 
