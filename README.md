@@ -64,21 +64,21 @@ Where you will be given a `user` object that looks something like this:
 
 ### type: number
 
-- [ ] multipleOf
-- [ ] maximum
-- [ ] exclusiveMaximum
-- [ ] minimum
-- [ ] exclusiveMinimum
+- [x] multipleOf
+- [x] maximum
+- [x] exclusiveMaximum
+- [x] minimum
+- [x] exclusiveMinimum
 
 ### type: string
 
-- [ ] maxLength
-- [ ] minLength
-- [ ] pattern
+- [x] maxLength
+- [x] minLength
+- [x] pattern
 
 ### type: array
 
-- [ ] items - object
+- [x] items - object
 - [ ] items - array
 - [ ] additionalItems - boolean
 - [ ] additionalItems - object
@@ -93,7 +93,7 @@ Where you will be given a `user` object that looks something like this:
 - [ ] required
 - [ ] additionalProperties - boolean
 - [ ] additionalProperties - object
-- [ ] properties
+- [x] properties
 - [ ] patternProperties
 - [ ] dependencies, value is an object
 - [ ] dependencies, value is an array
@@ -109,7 +109,7 @@ Where you will be given a `user` object that looks something like this:
 - [ ] oneOf
 - [ ] not
 - [ ] definitions
-- [ ] title
+- [x] title
 - [ ] description
 - [ ] default
 - [ ] format - date-time
