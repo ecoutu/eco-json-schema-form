@@ -51,7 +51,6 @@
 
       },
       _schemaChanged: function () {
-        var ctx = this;
         var schema = this.schema;
         var inputEl = this.$.input;
 
@@ -62,7 +61,7 @@
             inputEl.step = schema.multipleOf;
           }
 
-          if (schema.maximum) {
+          if (!isNaN(schema.maximum)) {
             if (schema.exclusiveMaximum) {
               inputEl.max = schema.maximum - (schema.multipleOf || 1);
             } else {
@@ -70,7 +69,7 @@
             }
           }
 
-          if (schema.minimum) {
+          if (!isNaN(schema.minimum)) {
             if (schema.exclusiveMinimum) {
               inputEl.min = schema.minimum + (schema.multipleOf || 1);
             } else {
