@@ -1,6 +1,6 @@
 var demoSchema = {
   "$schema": "http://json-schema.org/schema#",
-  "title": "Location",
+  "title": "Store",
   "type": "object",
   "properties": {
     "branch": {
@@ -32,9 +32,9 @@ var demoSchema = {
       "minLength": 2
     },
     "postalCode": {
-      "title": "Postal code",
+      "title": "Postal/Zip Code",
       "type": "string",
-      "minLength": 5
+      "pattern": "[a-zA-Z][0-9][a-zA-Z]\\s*[0-9][a-zA-Z][0-9]|[0-9]{5}(-[0-9]{4})?"
     },
     "phoneNumbers": {
       "title": "Phone numbers",
@@ -53,17 +53,24 @@ var demoSchema = {
         }
       }
     },
-    "job": {
-      "type": "object",
-      "title": "Job",
-      "properties": {
-        "title": {
-          "title": "Title",
-          "type": "string"
-        },
-        "salary": {
-          "title": "Salary",
-          "type": "string"
+    "positions": {
+      "type": "array",
+      "title": "Positions",
+      "items": {
+        "type": "object",
+        "title": "Positions",
+        "properties": {
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "salary": {
+            "title": "Salary",
+            "type": "number",
+            "multipleOf": 1000,
+            "minimum": 20000,
+            "maximum": 50000
+          }
         }
       }
     },
@@ -72,18 +79,15 @@ var demoSchema = {
       "type": "string",
       "pattern": "(?:^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}$)|(?:^$)"
     },
-    "websites":{
-      "title": "Alternate websites",
-      "type": "array",
-      "items": {
-        "title": "Website",
-        "type": "string"
-      }
+    "website":{
+      "title": "Website",
+      "type": "string",
+      "format": "uri"
     },
     "geo":{
       "title": "Geo coordinates",
       "type": "array",
-      "description": "The geo coordinates of this profile determined through the address string, first item being the longitude, second the latitude",
+      "description": "The geo coordinates of this location, first item being the longitude, second the latitude",
       "items": {
         "type": "number"
       }
@@ -182,7 +186,13 @@ var demoSchema = {
     },
     "establishedDate": {
       "title": "Established Date",
-      "type": ["string", "null"]
+      "type": "string",
+      "format": "date-time"
+    },
+    "closedDate": {
+      "title": "Closed Date",
+      "type": ["string", "null"],
+      "format": "date-time"
     }
   }
 };

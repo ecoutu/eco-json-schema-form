@@ -112,12 +112,12 @@ Where you will be given a `user` object that looks something like this:
 - [x] title
 - [ ] description
 - [ ] default
-- [ ] format - date-time
-- [ ] format - email
+- [x] format - date-time
+- [x] format - email
 - [ ] format - hostname
 - [ ] format - ipv4
 - [ ] format - ipv6
-- [ ] format - uri
+- [x] format - uri
 
 ## Planned
 
