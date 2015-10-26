@@ -43,7 +43,7 @@ With a schema:
 You can create an element:
 
 ```html
-<eco-schema-object schema=[[schema]] value={{user}}></eco-schema-object>
+<eco-json-schema-object schema=[[schema]] value={{user}}></eco-json-schema-object>
 ```
 
 Where you will be given a `user` object that looks something like this:
@@ -121,6 +121,6 @@ Where you will be given a `user` object that looks something like this:
 
 ## Planned
 
-* Create an element that provides a single entry point, so there is no need to choose between `<eco-schema-object>` and `<eco-schema-array>`
+* Create an element that provides a single entry point, so there is no need to choose between `<eco-json-schema-object>` and `<eco-json-schema-array>`
 * Being able to set an initial value (eg, providing an instance of the schema for modification)
 * Specifying which fields to show

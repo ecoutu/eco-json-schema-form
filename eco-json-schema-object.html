@@ -2,13 +2,13 @@
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html"/>
 
 <!--
-`eco-schema-object` takes in a JSON schema and builds a form, exposing a `value`
+`eco-json-schema-object` takes in a JSON schema and builds a form, exposing a `value`
 property that represents an object described by the schema.
 
 Given the element:
 
 ```
-<eco-schema-object schema="[[schema]]" value="{{value}}"></eco-schema-object>
+<eco-json-schema-object schema="[[schema]]" value="{{value}}"></eco-json-schema-object>
 ```
 
 And a JSON schema:
@@ -271,14 +271,14 @@ el.error = {
 ```
 
 @group eco Elements
-@element eco-schema-object
+@element eco-json-schema-object
 @demo demo/index.html
 -->
 
-<dom-module id="eco-schema-object">
+<dom-module id="eco-json-schema-object">
 
-  <link rel="import" href="./eco-schema-array.html"/>
-  <link rel="import" href="./eco-schema-input.html"/>
+  <link rel="import" href="./eco-json-schema-array.html"/>
+  <link rel="import" href="./eco-json-schema-input.html"/>
 
   <template>
 
@@ -298,7 +298,7 @@ el.error = {
 
   <script>
     Polymer({
-      is: 'eco-schema-object',
+      is: 'eco-json-schema-object',
       properties: {
         schema: {
           type: Object,
@@ -340,13 +340,13 @@ el.error = {
           }
 
           if (ctx._isSchemaValue(schema.type)) {
-            property.component.name = property.component.name || 'eco-schema-input';
+            property.component.name = property.component.name || 'eco-json-schema-input';
             property.value = '';
           } else if (ctx._isSchemaObject(schema.type)) {
-            property.component.name = property.component.name || 'eco-schema-object';
+            property.component.name = property.component.name || 'eco-json-schema-object';
             property.value = {};
           } else if (ctx._isSchemaArray(schema.type)) {
-            property.component.name = property.component.name || 'eco-schema-array';
+            property.component.name = property.component.name || 'eco-json-schema-array';
             property.value = [];
           } else {
             return console.error('Unknown property type %s', schema.type);

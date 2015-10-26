@@ -1,13 +1,13 @@
 <link rel="import" href="../polymer/polymer.html"/>
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html"/>
 
-<dom-module id="eco-schema-array">
+<dom-module id="eco-json-schema-array">
 
   <link rel="import" href="../iron-icons/iron-icons.html"/>
   <link rel="import" href="../paper-icon-button/paper-icon-button.html"/>
 
-  <link rel="import" href="./eco-schema-input.html"/>
-  <link rel="import" href="./eco-schema-object.html"/>
+  <link rel="import" href="./eco-json-schema-input.html"/>
+  <link rel="import" href="./eco-json-schema-object.html"/>
 
   <template>
 
@@ -31,7 +31,7 @@
 
   <script>
     Polymer({
-      is: 'eco-schema-array',
+      is: 'eco-json-schema-array',
       properties: {
         schema: {
           type: Object,
@@ -201,11 +201,11 @@
 
         if (!item.component.name) {
           if (this._isSchemaValue(schema.type)) {
-            item.component.name = 'eco-schema-input';
+            item.component.name = 'eco-json-schema-input';
           } else if (this._isSchemaObject(schema.type)) {
-            item.component.name = 'eco-schema-object';
+            item.component.name = 'eco-json-schema-object';
           } else if (this._isSchemaArray(schema.type)) {
-            item.component.name = 'eco-schema-array';
+            item.component.name = 'eco-json-schema-array';
           } else {
             return console.error('Unknown item type %s', schema.type);
           }
