@@ -1,5 +1,5 @@
 {
-  "name": "eco-json-schema",
+  "name": "eco-json-schema-form",
   "version": "0.1.0",
   "description": "Polymer 1.0 JSON Schema form builder",
   "main": "index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ecoutu/eco-json-schema"
+    "url": "https://github.com/ecoutu/eco-json-schema-form"
   },
   "keywords": [
     "polymer"
@@ -17,9 +17,9 @@
   "author": "Eric Coutu <eric.coutu@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ecoutu/eco-json-schema/issues"
+    "url": "https://github.com/ecoutu/eco-json-schema-form/issues"
   },
-  "homepage": "https://github.com/ecoutu/eco-json-schema",
+  "homepage": "https://github.com/ecoutu/eco-json-schema-form",
   "devDependencies": {
     "bower": "^1.4.1",
     "polyserve": "^0.4.0"

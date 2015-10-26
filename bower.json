@@ -1,5 +1,5 @@
 {
-  "name": "eco-json-schema",
+  "name": "eco-json-schema-form",
   "version": "0.1.0",
   "authors": [
     "Eric Coutu <eric.coutu@gmail.com>"
@@ -11,7 +11,7 @@
     "JSON Schema"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/ecoutu/eco-json-schema",
+  "homepage": "https://github.com/ecoutu/eco-json-schema-form",
   "ignore": [
     "**/.*",
     "node_modules",

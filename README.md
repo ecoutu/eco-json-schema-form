@@ -1,12 +1,12 @@
-eco-json-schema
+eco-json-schema-form
 ===============
-[Polymer 1.0 JSON Schema form builder](http://ecoutu.github.io/eco-json-schema/components/eco-json-schema/)
+[Polymer 1.0 JSON Schema form builder](http://ecoutu.github.io/eco-json-schema-form/components/eco-json-schema-form/)
 
 ## Description
 
 This repository provides elements that take in a [JSON schema](http://json-schema.org/) and generates a DOM tree of inputs linked to the object described by the schema.
 
-## [Demo](http://ecoutu.github.io/eco-json-schema/components/eco-json-schema/demo/)
+## [Demo](http://ecoutu.github.io/eco-json-schema-form/components/eco-json-schema-form/demo/)
 
 With a schema:
 
