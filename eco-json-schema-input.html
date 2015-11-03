@@ -1,6 +1,21 @@
 <link rel="import" href="../polymer/polymer.html"/>
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html"/>
 
+<!--
+`eco-json-schema-input` takes in a JSON schema of type number and string and
+contains a `paper-input`, exposing a `value` property that represents the schema.
+
+Validation is handled for strings and number/integers by mapping JSON schema
+validation keywords to `paper-input` attributes; form elements will automatically
+try and validate themselves as users provide input:
+
+Please see the `eco-json-schema-object` documentation for further information.
+
+@group eco Elements
+@element eco-json-schema-input
+@demo demo/index.html
+-->
+
 <dom-module id="eco-json-schema-input">
 
   <link rel="import" href="../paper-input/paper-input.html"/>
