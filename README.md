@@ -1,64 +1,19 @@
 eco-json-schema-form
 ===============
+
 [Polymer 1.0 JSON Schema form builder](http://ecoutu.github.io/eco-json-schema-form)
 
 ## Description
 
 This repository provides elements that take in a [JSON schema](http://json-schema.org/) and generates a DOM tree of inputs linked to the object described by the schema.
 
-## [Demo](http://ecoutu.github.io/eco-json-schema-form)
+See the [component page](http://ecoutu.github.io/eco-json-schema-form) for more information.
 
-With a schema:
+## TODO:
 
-```json
-{
-  "title": "User",
-  "properties": {
-    "name": {
-      "type": "string",
-      "title": "Name"
-    },
-    "emails": {
-      "type": "array",
-      "title": "Email Addresses",
-      "items": {
-        "type": "object",
-        "title": "Email Address",
-        "properties": {
-          "type": {
-            "type": "string",
-            "title": "Type"
-          },
-          "email": {
-            "type": "string",
-            "title": "Email"
-          }
-        }
-      }
-    }
-  }
-}
-```
-
-You can create an element:
-
-```html
-<eco-json-schema-object schema=[[schema]] value={{user}}></eco-json-schema-object>
-```
-
-Where you will be given a `user` object that looks something like this:
-
-```json
-{
-  "name": "Eric Coutu",
-  "emails": [
-    {
-      "type": "Personal",
-      "email": "my@email.com"
-    }
-  ]
-}
-```
+* Being able to set an initial value (eg, providing an instance of the schema for modification) - currently only supports new instances
+* Create an element that provides a single entry point, so there is no need to choose between `<eco-json-schema-object>` and `<eco-json-schema-array>`
+* Specifying which fields to show
 
 ## Supported
 
@@ -118,9 +73,3 @@ Where you will be given a `user` object that looks something like this:
 - [ ] format - ipv4
 - [ ] format - ipv6
 - [x] format - uri
-
-## Planned
-
-* Create an element that provides a single entry point, so there is no need to choose between `<eco-json-schema-object>` and `<eco-json-schema-array>`
-* Being able to set an initial value (eg, providing an instance of the schema for modification)
-* Specifying which fields to show
