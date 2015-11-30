@@ -17,6 +17,7 @@ Please see the `eco-json-schema-object` documentation for further information.
   <link rel="import" href="../iron-icons/iron-icons.html"/>
   <link rel="import" href="../paper-icon-button/paper-icon-button.html"/>
 
+  <link rel="import" href="./eco-json-schema-boolean.html"/>
   <link rel="import" href="./eco-json-schema-input.html"/>
   <link rel="import" href="./eco-json-schema-object.html"/>
 
@@ -211,7 +212,9 @@ Please see the `eco-json-schema-object` documentation for further information.
         }
 
         if (!item.component.name) {
-          if (this._isSchemaValue(schema.type)) {
+          if (this._isSchemaBoolean(schema.type)) {
+            item.component.name = 'eco-json-schema-boolean';
+          } else if (this._isSchemaValue(schema.type)) {
             item.component.name = 'eco-json-schema-input';
           } else if (this._isSchemaObject(schema.type)) {
             item.component.name = 'eco-json-schema-object';

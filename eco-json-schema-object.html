@@ -278,6 +278,7 @@ el.error = {
 <dom-module id="eco-json-schema-object">
 
   <link rel="import" href="./eco-json-schema-array.html"/>
+  <link rel="import" href="./eco-json-schema-boolean.html"/>
   <link rel="import" href="./eco-json-schema-input.html"/>
 
   <template>
@@ -339,7 +340,10 @@ el.error = {
             property.component.valueProperty = 'value';
           }
 
-          if (ctx._isSchemaValue(schema.type)) {
+          if (ctx._isSchemaBoolean(schema.type)) {
+            property.component.name = property.component.name || 'eco-json-schema-boolean';
+            property.value = false;
+          } else if (ctx._isSchemaValue(schema.type)) {
             property.component.name = property.component.name || 'eco-json-schema-input';
             property.value = '';
           } else if (ctx._isSchemaObject(schema.type)) {
