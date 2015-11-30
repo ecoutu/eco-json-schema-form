@@ -1,0 +1,114 @@
+<link rel="import" href="../polymer/polymer.html"/>
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html"/>
+
+<dom-module id="eco-json-schema-enum">
+
+  <link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu.html"/>
+  <link rel="import" href="../paper-menu/paper-menu.html"/>
+  <link rel="import" href="../paper-item/paper-item.html"/>
+
+  <template>
+
+    <style>
+
+      :host {
+        display: block;
+        @apply(--layout-horizontal);
+      }
+
+    </style>
+
+    <paper-dropdown-menu id="dropdown" class="flex" value="{{value}}">
+      <paper-menu class="dropdown-content">
+        <template is="dom-repeat" items="[[_items]]">
+          <paper-item label="[[item]]">[[item]]</paper-item>
+        </template>
+      </paper-menu>
+    </paper-dropdown-menu>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'eco-json-schema-enum',
+      properties: {
+        schema: {
+          type: Object,
+          observer: '_schemaChanged'
+        },
+        value: {
+          type: String,
+          notify: true,
+          value: null
+        },
+        error: {
+          type: String,
+          observer: '_errorChanged',
+          value: null
+        }
+      },
+      ready: function () {
+
+      },
+      detached: function () {
+
+      },
+      _schemaChanged: function () {
+        var schema = this.schema;
+        var inputEl = this.$.dropdown;
+
+        if (schema.component && schema.component.properties) {
+          Object.keys(schema.component.properties).forEach(function(prop) {
+            inputEl[prop] = schema.component.properties[prop];
+          });
+        }
+
+        this._items = schema.enum.filter(function(item) {
+          return item !== null;
+        });
+
+        if (schema.title) {
+          inputEl.label = schema.title;
+        }
+      },
+      _errorChanged: function () {
+        if (this.error) {
+          this.$.dropdown.invalid = true;
+        } else {
+          this.$.dropdown.invalid = false;
+        }
+      },
+      _isSchemaValue: function (type) {
+        return this._isSchemaBoolean(type) || this._isSchemaNumber(type) || this._isSchemaString(type);
+      },
+      _isSchemaBoolean: function (type) {
+        if (Array.isArray(type)) {
+          return type.indexOf('boolean') !== -1;
+        } else {
+          return type === 'boolean';
+        }
+      },
+      _isSchemaNumber: function(type) {
+        if (Array.isArray(type)) {
+          return type.indexOf('number') !== -1 || type.indexOf('integer') !== -1;
+        } else {
+          return type === 'number' || type === 'integer';
+        }
+      },
+      _isSchemaString: function (type) {
+        if (Array.isArray(type)) {
+          return type.indexOf('string') !== -1;
+        } else {
+          return type === 'string';
+        }
+      },
+      _isSchemaObject: function (type) {
+        return type === 'object';
+      },
+      _isSchemaArray: function (type) {
+        return type === 'array';
+      }
+    });
+  </script>
+
+</dom-module>

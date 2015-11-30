@@ -279,6 +279,7 @@ el.error = {
 
   <link rel="import" href="./eco-json-schema-array.html"/>
   <link rel="import" href="./eco-json-schema-boolean.html"/>
+  <link rel="import" href="./eco-json-schema-enum.html"/>
   <link rel="import" href="./eco-json-schema-input.html"/>
 
   <template>
@@ -340,7 +341,10 @@ el.error = {
             property.component.valueProperty = 'value';
           }
 
-          if (ctx._isSchemaBoolean(schema.type)) {
+          if (ctx._isSchemaEnum(schema)) {
+            property.component.name = property.component.name || 'eco-json-schema-enum';
+            property.value = '';
+          } else if (ctx._isSchemaBoolean(schema.type)) {
             property.component.name = property.component.name || 'eco-json-schema-boolean';
             property.value = false;
           } else if (ctx._isSchemaValue(schema.type)) {
@@ -480,6 +484,9 @@ el.error = {
         } else {
           return type === 'boolean';
         }
+      },
+      _isSchemaEnum: function (schema) {
+        return !!schema.enum;
       },
       _isSchemaNumber: function (type) {
         if (Array.isArray(type)) {
