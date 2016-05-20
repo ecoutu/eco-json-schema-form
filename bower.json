@@ -27,7 +27,7 @@
     "polymer": "Polymer/polymer#~1.2.1",
     "paper-checkbox": "PolymerElements/paper-checkbox#~1.0.15",
     "paper-item": "PolymerElements/paper-item#~1.1.2",
-    "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#~1.1.0",
+    "paper-dropdown-menu": "^1.2.1",
     "paper-menu": "^1.2.2"
   },
   "devDependencies": {
